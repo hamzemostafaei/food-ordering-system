@@ -11,10 +11,18 @@
 
     <artifactId>order-domain</artifactId>
 
-    <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>order-domain-core</module>
+        <module>order-application-service</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.hamze</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
