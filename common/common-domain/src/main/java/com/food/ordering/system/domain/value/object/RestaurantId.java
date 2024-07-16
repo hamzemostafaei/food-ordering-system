@@ -1,4 +1,4 @@
-package com.hamze.common.domain.value.object;
+package com.food.ordering.system.domain.value.object;
 
 public class RestaurantId extends ABaseId<Long>{
     public RestaurantId(Long value) {

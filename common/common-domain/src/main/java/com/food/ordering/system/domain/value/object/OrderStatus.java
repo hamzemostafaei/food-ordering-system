@@ -1,4 +1,4 @@
-package com.hamze.common.domain.value.object;
+package com.food.ordering.system.domain.value.object;
 
 public enum OrderStatus {
 
