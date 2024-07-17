@@ -2,17 +2,20 @@ package com.food.ordering.system.order.service.domain.entity;
 
 import com.food.ordering.system.domain.entity.ABaseAggregateRoot;
 import com.food.ordering.system.domain.value.object.*;
+import com.food.ordering.system.order.service.domain.exception.OrderDomainException;
+import com.food.ordering.system.order.service.domain.value.object.OrderItemId;
 import com.food.ordering.system.order.service.domain.value.object.StreetAddress;
 import com.food.ordering.system.order.service.domain.value.object.TrackingId;
 
 import java.util.List;
+import java.util.UUID;
 
 public class Order extends ABaseAggregateRoot<OrderId> {
     private final CustomerId customerId;
     private final RestaurantId restaurantId;
     private final StreetAddress deliveryAddress;
     private final Money price;
-    private final List<OrderItem> orderItemEntities;
+    private final List<OrderItem> items;
 
     private TrackingId trackingId;
     private OrderStatus orderStatus;
@@ -24,7 +27,7 @@ public class Order extends ABaseAggregateRoot<OrderId> {
         restaurantId = builder.restaurantId;
         deliveryAddress = builder.deliveryAddress;
         price = builder.price;
-        orderItemEntities = builder.orderItemEntities;
+        items = builder.orderItemEntities;
         trackingId = builder.trackingId;
         orderStatus = builder.orderStatus;
         failureMessages = builder.failureMessages;
@@ -32,6 +35,71 @@ public class Order extends ABaseAggregateRoot<OrderId> {
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    public void initializeOrder() {
+        setId(new OrderId(UUID.randomUUID()));
+        trackingId = new TrackingId(UUID.randomUUID());
+        orderStatus = OrderStatus.Pending;
+        initializeOrderItems();
+    }
+
+    public void validateOrder() {
+        validateInitialOrder();
+        validateTotalPrice();
+        validateItemsPrice();
+    }
+
+    private void validateItemsPrice() {
+        Money orderItemsTotal = this.items.stream()
+                .map((orderItem) -> {
+                    validateItemPrice(orderItem);
+                    return orderItem.getSubTotal();
+                })
+                .reduce(Money.ZERO, Money::add);
+
+        if (!price.equals(orderItemsTotal)) {
+            throw new OrderDomainException(
+                    String.format(
+                            "Total price: %s is not equal ot order items total: %s !",
+                            price.getAmount(),
+                            orderItemsTotal.getAmount()
+                    )
+            );
+        }
+    }
+
+    private void validateItemPrice(OrderItem orderItem) {
+        if (!orderItem.isPriceValid()) {
+            throw new OrderDomainException(
+                    String.format(
+                            "Order item price: %s is not valid for product: %s ",
+                            orderItem.getPrice().getAmount(),
+                            orderItem.getProduct().getId().getValue()
+                    )
+            );
+        }
+    }
+
+
+    private void validateTotalPrice() {
+        if (price == null || !price.isGreaterThanZero()) {
+            throw new OrderDomainException("Total price must be greater than zero!");
+        }
+
+    }
+
+    private void validateInitialOrder() {
+        if (orderStatus != null || getId() != null) {
+            throw new OrderDomainException("Order is not in correct state for initialization!");
+        }
+    }
+
+    private void initializeOrderItems() {
+        long orderItemId = 1;
+        for (OrderItem item : items) {
+            item.initializeOrderItem(super.getId(), new OrderItemId(orderItemId++));
+        }
     }
 
     public CustomerId getCustomerId() {
@@ -50,8 +118,8 @@ public class Order extends ABaseAggregateRoot<OrderId> {
         return price;
     }
 
-    public List<OrderItem> getOrderItemEntities() {
-        return orderItemEntities;
+    public List<OrderItem> getItems() {
+        return items;
     }
 
     public TrackingId getTrackingId() {
