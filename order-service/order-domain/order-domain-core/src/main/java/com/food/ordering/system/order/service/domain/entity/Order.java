@@ -50,6 +50,54 @@ public class Order extends ABaseAggregateRoot<OrderId> {
         validateItemsPrice();
     }
 
+    public void pay() {
+        if (orderStatus != OrderStatus.Pending) {
+            throw new OrderDomainException("Order is not in correct state for pay operation!");
+        }
+        orderStatus = OrderStatus.Paid;
+    }
+
+    public void approve() {
+        if (orderStatus != OrderStatus.Paid) {
+            throw new OrderDomainException("Order is not in correct state for approve operation!");
+        }
+        orderStatus = OrderStatus.Approved;
+    }
+
+    public void initCancel(List<String> failureMessages) {
+        if (orderStatus != OrderStatus.Paid) {
+            throw new OrderDomainException("Order is not in correct state for init-cancel operation!");
+        }
+
+        orderStatus = OrderStatus.Cancelling;
+
+        updateFailureMessages(failureMessages);
+    }
+
+    private void updateFailureMessages(List<String> failureMessages) {
+        if (this.failureMessages != null && failureMessages != null) {
+            this.failureMessages.addAll(
+                    failureMessages
+                            .stream()
+                            .filter((message) -> !(message != null && message.isEmpty()))
+                            .toList()
+            );
+        }
+
+        if (this.failureMessages == null) {
+            this.failureMessages = failureMessages;
+        }
+
+    }
+
+    public void cancel(List<String> failureMessages) {
+        if (!(orderStatus == OrderStatus.Cancelling || orderStatus == OrderStatus.Pending) {
+            throw new OrderDomainException("Order is not in correct state for cancel operation!");
+        }
+        orderStatus = OrderStatus.Cancelled;
+        updateFailureMessages(failureMessages);
+    }
+
     private void validateItemsPrice() {
         Money orderItemsTotal = this.items.stream()
                 .map((orderItem) -> {
