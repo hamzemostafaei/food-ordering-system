@@ -27,7 +27,7 @@ public class Order extends ABaseAggregateRoot<OrderId> {
         restaurantId = builder.restaurantId;
         deliveryAddress = builder.deliveryAddress;
         price = builder.price;
-        items = builder.orderItemEntities;
+        items = builder.items;
         trackingId = builder.trackingId;
         orderStatus = builder.orderStatus;
         failureMessages = builder.failureMessages;
@@ -91,7 +91,7 @@ public class Order extends ABaseAggregateRoot<OrderId> {
     }
 
     public void cancel(List<String> failureMessages) {
-        if (!(orderStatus == OrderStatus.Cancelling || orderStatus == OrderStatus.Pending) {
+        if (!(orderStatus == OrderStatus.Cancelling || orderStatus == OrderStatus.Pending)) {
             throw new OrderDomainException("Order is not in correct state for cancel operation!");
         }
         orderStatus = OrderStatus.Cancelled;
@@ -188,7 +188,7 @@ public class Order extends ABaseAggregateRoot<OrderId> {
         private RestaurantId restaurantId;
         private StreetAddress deliveryAddress;
         private Money price;
-        private List<OrderItem> orderItemEntities;
+        private List<OrderItem> items;
         private TrackingId trackingId;
         private OrderStatus orderStatus;
         private List<String> failureMessages;
@@ -221,8 +221,8 @@ public class Order extends ABaseAggregateRoot<OrderId> {
             return this;
         }
 
-        public Builder orderItemEntities(List<OrderItem> val) {
-            orderItemEntities = val;
+        public Builder items(List<OrderItem> val) {
+            items = val;
             return this;
         }
 
