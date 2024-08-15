@@ -11,7 +11,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 public class OrderItem {
-    private final Long productId;
+    private final UUID productId;
     private final Integer quantity;
     private final BigDecimal price;
     private final BigDecimal subTotal;
