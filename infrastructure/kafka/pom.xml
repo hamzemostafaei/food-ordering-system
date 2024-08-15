@@ -34,7 +34,7 @@
             </dependency>
             <dependency>
                 <groupId>io.confluent</groupId>
-                <artifactId>kafa-avro-serializer</artifactId>
+                <artifactId>kafka-avro-serializer</artifactId>
                 <version>${kafka-avro-seralizer.version}</version>
                 <exclusions>
                     <exclusion>
