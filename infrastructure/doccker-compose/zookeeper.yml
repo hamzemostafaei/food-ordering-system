@@ -2,6 +2,7 @@ version: '3.7'
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:${KAFKA_VERSION:-latest}
+    container_name: zookeeper
     hostname: zookeeper
     ports:
       - "2181:2181"
