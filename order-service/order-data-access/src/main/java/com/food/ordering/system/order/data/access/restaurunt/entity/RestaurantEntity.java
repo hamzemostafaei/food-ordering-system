@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@Entity
+//@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "order_restaurant_m_view", schema = "restaurant")
+//@Table(name = "order_restaurant_m_view", schema = "restaurant")
 public class RestaurantEntity {
 
     @EmbeddedId

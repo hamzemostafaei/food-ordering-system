@@ -1,7 +1,7 @@
 package com.food.ordering.system.kafka.producer.service.impl;
 
 import com.food.ordering.system.kafka.producer.exception.KafkaProducerException;
-import com.food.ordering.system.kafka.producer.service.IKafkaProducerService;
+import com.food.ordering.system.kafka.producer.service.IKafkaProducer;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class KafkaProducerServiceImpl<K extends Serializable, V extends SpecificRecordBase> implements IKafkaProducerService<K, V> {
+public class KafkaProducerImpl<K extends Serializable, V extends SpecificRecordBase> implements IKafkaProducer<K, V> {
 
     private final KafkaTemplate<K, V> kafkaTemplate;
 

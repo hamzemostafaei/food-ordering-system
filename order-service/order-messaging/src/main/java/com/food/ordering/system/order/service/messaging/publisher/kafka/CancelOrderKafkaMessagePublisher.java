@@ -1,14 +1,16 @@
 package com.food.ordering.system.order.service.messaging.publisher.kafka;
 
 import com.food.ordering.system.kafka.order.avro.model.PaymentRequestAvroModel;
+import com.food.ordering.system.kafka.producer.service.IKafkaProducer;
 import com.food.ordering.system.order.service.domain.config.OrderServiceConfigData;
 import com.food.ordering.system.order.service.domain.event.OrderCanceledEvent;
 import com.food.ordering.system.order.service.domain.ports.output.message.publisher.payment.IOrderCanceledPaymentRequestMessagePublisher;
 import com.food.ordering.system.order.service.messaging.mapper.OrderMessagingDataMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Component
@@ -17,8 +19,7 @@ public class CancelOrderKafkaMessagePublisher implements IOrderCanceledPaymentRe
 
     private final OrderMessagingDataMapper orderMessagingDataMapper;
     private final OrderServiceConfigData orderServiceConfigData;
-    private final KafkaProducer<String, PaymentRequestAvroModel> kafkaProducer;
-    private final OrderKafkaMessageHelper orderKafkaMessageHelper;
+    private final IKafkaProducer<String, PaymentRequestAvroModel> kafkaProducer;
 
     @Override
     public void publish(OrderCanceledEvent orderCanceledEvent) {
@@ -27,18 +28,12 @@ public class CancelOrderKafkaMessagePublisher implements IOrderCanceledPaymentRe
 
         try {
             PaymentRequestAvroModel paymentRequestAvroModel = orderMessagingDataMapper.orderCancelledEventToPaymentRequestAvroModel(orderCanceledEvent);
-
+            String topicName = orderServiceConfigData.getPaymentRequestTopicName();
             kafkaProducer.send(
-                    orderKafkaMessageHelper.getProducerRecord(
-                            orderServiceConfigData.getPaymentRequestTopicName(),
-                            orderId,
-                            paymentRequestAvroModel
-                    ),
-                    orderKafkaMessageHelper.getKafkaCallback(
-                            orderServiceConfigData.getPaymentRequestTopicName(),
-                            paymentRequestAvroModel,
-                            paymentRequestAvroModel.getOrderId().toString()
-                    )
+                    topicName,
+                    orderId,
+                    paymentRequestAvroModel,
+                    new CompletableFuture<>()
             );
 
             log.info("PaymentRequestAvroModel sent to Kafka for orderId: {}", orderId);

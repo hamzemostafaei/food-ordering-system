@@ -1,0 +1,26 @@
+server:
+  port: 8184
+
+spring:
+  jpa:
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        ddl-auto: update
+        format_sql: true
+        session.events.log: LOG_QUERIES_SLOWER_THAN_MS:100
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/orclpdb
+    username: fos_customer
+    password: 123456
+    hikari:
+      pool-name: BankingSystemMainPool
+      driver-class-name: oracle.jdbc.OracleDriver
+      minimum-idle: 4
+      maximum-pool-size: 16
+      idle-timeout: 43200000
+      max-lifetime: 86400000
+      connection-test-query: select 1 from dual
+      register-mbeans: false
+      auto-commit: false

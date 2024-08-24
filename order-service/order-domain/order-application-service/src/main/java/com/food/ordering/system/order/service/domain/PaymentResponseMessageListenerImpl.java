@@ -17,7 +17,7 @@ public class PaymentResponseMessageListenerImpl implements IPaymentResponseMessa
     }
 
     @Override
-    public void paymentCanceled(PaymentResponse paymentResponse) {
+    public void paymentCancelled(PaymentResponse paymentResponse) {
 
     }
 }

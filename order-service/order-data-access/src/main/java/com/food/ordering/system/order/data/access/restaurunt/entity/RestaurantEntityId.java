@@ -10,7 +10,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Embeddable
+//@Embeddable
 public class RestaurantEntityId {
     private UUID restaurantId;
     private UUID productId;

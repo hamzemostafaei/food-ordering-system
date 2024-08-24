@@ -1,14 +1,16 @@
 package com.food.ordering.system.order.service.messaging.publisher.kafka;
 
 import com.food.ordering.system.kafka.order.avro.model.RestaurantApprovalRequestAvroModel;
+import com.food.ordering.system.kafka.producer.service.IKafkaProducer;
 import com.food.ordering.system.order.service.domain.config.OrderServiceConfigData;
 import com.food.ordering.system.order.service.domain.event.OrderPaidEvent;
 import com.food.ordering.system.order.service.domain.ports.output.message.publisher.restaurant.approval.IOrderPaidRestaurantRequestMessagePublisher;
 import com.food.ordering.system.order.service.messaging.mapper.OrderMessagingDataMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Component
@@ -17,8 +19,7 @@ public class PayOrderKafkaMessagePublisher implements IOrderPaidRestaurantReques
 
     private final OrderMessagingDataMapper orderMessagingDataMapper;
     private final OrderServiceConfigData orderServiceConfigData;
-    private final KafkaProducer<String, RestaurantApprovalRequestAvroModel> kafkaProducer;
-    private final OrderKafkaMessageHelper orderKafkaMessageHelper;
+    private final IKafkaProducer<String, RestaurantApprovalRequestAvroModel> kafkaProducer;
 
     @Override
     public void publish(OrderPaidEvent domainEvent) {
@@ -27,20 +28,14 @@ public class PayOrderKafkaMessagePublisher implements IOrderPaidRestaurantReques
         log.info("Received OrderPaidEvent for orderId: {}", orderId);
 
         try {
-            RestaurantApprovalRequestAvroModel restaurantApprovalRequestAvroModel =
-                    orderMessagingDataMapper.orderPaidEventToRestaurantRequestAvroModel(domainEvent);
+            RestaurantApprovalRequestAvroModel restaurantApprovalRequestAvroModel = orderMessagingDataMapper.orderPaidEventToRestaurantRequestAvroModel(domainEvent);
+            String topicName = orderServiceConfigData.getPaymentRequestTopicName();
 
             kafkaProducer.send(
-                    orderKafkaMessageHelper.getProducerRecord(
-                            orderServiceConfigData.getRestuarantApprovalRequestTopicName(),
-                            orderId,
-                            restaurantApprovalRequestAvroModel
-                    ),
-                    orderKafkaMessageHelper.getKafkaCallback(
-                            orderServiceConfigData.getRestuarantApprovalRequestTopicName(),
-                            restaurantApprovalRequestAvroModel,
-                            orderId
-                    )
+                    topicName,
+                    orderId,
+                    restaurantApprovalRequestAvroModel,
+                    new CompletableFuture<>()
             );
 
             log.info("RestaurantApprovalRequestAvroModel sent to Kafka for orderId: {}", orderId);

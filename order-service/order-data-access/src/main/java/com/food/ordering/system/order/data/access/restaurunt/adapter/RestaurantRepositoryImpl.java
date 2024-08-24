@@ -16,16 +16,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RestaurantRepositoryImpl implements IRestaurantRepository {
 
-    private final IRestaurantJpaRepository restaurantJpaRepository;
+//    private final IRestaurantJpaRepository restaurantJpaRepository;
     final private RestaurantDataAccessMapper restaurantDataAccessMapper;
 
     @Override
     public Optional<Restaurant> findRestaurantInformation(Restaurant restaurant) {
-        List<UUID> restaurantProducts = restaurantDataAccessMapper.restaurantToRestaurantProducts(restaurant);
+        /*List<UUID> restaurantProducts = restaurantDataAccessMapper.restaurantToRestaurantProducts(restaurant);
 
         Optional<List<RestaurantEntity>> restaurantEntities =
                 restaurantJpaRepository.findByRestaurantIdAndProductIdIn(restaurant.getId().getValue(), restaurantProducts);
 
-        return restaurantEntities.map(restaurantDataAccessMapper::restaurantEntityToRestaurant);
+        return restaurantEntities.map(restaurantDataAccessMapper::restaurantEntityToRestaurant);*/
+        return null;
     }
 }
