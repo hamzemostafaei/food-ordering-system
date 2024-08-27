@@ -11,4 +11,9 @@ public class Customer extends ABaseAggregateRoot<CustomerId> {
     public Customer(CustomerId customerId) {
         super.setId(customerId);
     }
+
+    @Override
+    public String toString() {
+        return "Customer{}";
+    }
 }

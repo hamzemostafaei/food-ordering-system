@@ -247,4 +247,18 @@ public class Order extends ABaseAggregateRoot<OrderId> {
             return new Order(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "customerId=" + customerId +
+                ", restaurantId=" + restaurantId +
+                ", deliveryAddress=" + deliveryAddress +
+                ", price=" + price +
+                ", items=" + items +
+                ", trackingId=" + trackingId +
+                ", orderStatus=" + orderStatus +
+                ", failureMessages=" + failureMessages +
+                '}';
+    }
 }

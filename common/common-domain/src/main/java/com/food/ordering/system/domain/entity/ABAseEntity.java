@@ -24,4 +24,11 @@ public abstract class ABAseEntity<ID> {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        return "ABAseEntity{" +
+                "id=" + id +
+                '}';
+    }
 }

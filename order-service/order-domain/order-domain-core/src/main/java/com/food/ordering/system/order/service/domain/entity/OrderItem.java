@@ -94,4 +94,15 @@ public class OrderItem extends ABAseEntity<OrderItemId> {
             return new OrderItem(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "product=" + product +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                ", subTotal=" + subTotal +
+                ", orderId=" + orderId +
+                '}';
+    }
 }

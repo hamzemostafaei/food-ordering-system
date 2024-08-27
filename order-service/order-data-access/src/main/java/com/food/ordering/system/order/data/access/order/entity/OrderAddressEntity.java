@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,14 +15,20 @@ import java.util.UUID;
 public class OrderAddressEntity {
 
     @Id
-    private UUID id;
+    @Column(length = 64)
+    private String id;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ORDER_ID")
     private OrderEntity order;
 
+    @Column(length = 256)
     private String street;
+
+    @Column(length = 16)
     private String postalCode;
+
+    @Column(length = 64)
     private String city;
 
     @Override

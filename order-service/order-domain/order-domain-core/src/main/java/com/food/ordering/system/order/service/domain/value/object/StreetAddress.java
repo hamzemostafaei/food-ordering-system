@@ -5,18 +5,18 @@ import java.util.UUID;
 
 public class StreetAddress {
     protected final String city;
-    private final UUID id;
+    private final String id;
     private final String street;
     private final String postalCode;
 
-    public StreetAddress(UUID id, String street, String postalCode, String city) {
+    public StreetAddress(String id, String street, String postalCode, String city) {
         this.id = id;
         this.street = street;
         this.postalCode = postalCode;
         this.city = city;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 

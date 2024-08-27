@@ -27,6 +27,6 @@ public class RestaurantRepositoryImpl implements IRestaurantRepository {
                 restaurantJpaRepository.findByRestaurantIdAndProductIdIn(restaurant.getId().getValue(), restaurantProducts);
 
         return restaurantEntities.map(restaurantDataAccessMapper::restaurantEntityToRestaurant);*/
-        return null;
+        return Optional.empty();
     }
 }

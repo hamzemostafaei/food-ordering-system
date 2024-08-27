@@ -70,4 +70,12 @@ public class Product extends ABAseEntity<ProductId> {
             return new Product(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "name='" + name + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }

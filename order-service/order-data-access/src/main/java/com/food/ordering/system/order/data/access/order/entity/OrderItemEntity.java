@@ -16,15 +16,23 @@ import java.util.Objects;
 @IdClass(OrderItemEntityId.class)
 public class OrderItemEntity {
     @Id
+    @Column(length = 19)
     private Long id;
     @Id
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ORDER_ID")
     private OrderEntity order;
 
+    @Column(length = 64)
     private String productId;
+
+    @Column(length = 20,precision = 2)
     private BigDecimal price;
+
+    @Column(length = 20)
     private Integer quantity;
+
+    @Column(length = 20,precision = 2)
     private BigDecimal subTotal;
 
     @Override

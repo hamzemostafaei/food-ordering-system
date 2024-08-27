@@ -18,13 +18,26 @@ import java.util.Objects;
 public class OrderEntity {
 
     @Id
+    @Column(length = 64)
     private String id;
+
+    @Column(length = 64)
     private String customerId;
+
+    @Column(length = 64)
     private String restaurantId;
+
+    @Column(length = 64)
     private String trackingId;
+
+    @Column(length = 20,precision = 2)
     private BigDecimal price;
+
+    @Column(length = 64)
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
+    @Column(length = 256)
     private String failureMessages;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
