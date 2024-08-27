@@ -19,7 +19,7 @@ public class OrderCreateCommandHandler {
     private final IOrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher;
 
     public CreateOrderResponse createOrder(CreateOrderCommand createOrderCommand) {
-        OrderCreatedEvent orderCreatedEvent = orderCreateHelper.persisOrder(createOrderCommand);
+        OrderCreatedEvent orderCreatedEvent = orderCreateHelper.persistOrder(createOrderCommand);
         log.info("Order Created Event: {}", orderCreatedEvent);
         orderCreatedPaymentRequestMessagePublisher.publish(orderCreatedEvent);
         return orderDataMapper.orderToCreateOrderResponse(orderCreatedEvent.getOrder());

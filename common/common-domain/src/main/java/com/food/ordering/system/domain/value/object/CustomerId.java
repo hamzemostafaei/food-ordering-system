@@ -1,9 +1,7 @@
 package com.food.ordering.system.domain.value.object;
 
-import java.util.UUID;
-
-public class CustomerId extends ABaseId<UUID> {
-    public CustomerId(UUID value) {
+public class CustomerId extends ABaseId<String> {
+    public CustomerId(String value) {
         super(value);
     }
 }

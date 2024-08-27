@@ -18,7 +18,7 @@ public class CustomerRepositoryImpl implements ICustomerRepository {
     private final CustomerDataAccessMapper customerDataAccessMapper;
 
     @Override
-    public Optional<Customer> findCustomer(UUID customerId) {
+    public Optional<Customer> findCustomer(String customerId) {
         return customerJpaRepository.findById(customerId).map(customerDataAccessMapper::customerEntityToCustomer);
     }
 }

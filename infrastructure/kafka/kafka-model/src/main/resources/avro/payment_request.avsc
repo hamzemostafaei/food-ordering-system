@@ -7,28 +7,28 @@
             "name": "id",
             "type": {
                 "type": "string",
-                "logicalType": "uuid"
+                "logicalType": "string"
             }
         },
         {
             "name": "sagaId",
             "type": {
                 "type": "string",
-                "logicalType": "uuid"
+                "logicalType": "string"
             }
         },
         {
             "name": "customerId",
             "type": {
                 "type": "string",
-                "logicalType": "uuid"
+                "logicalType": "string"
             }
         },
         {
             "name": "orderId",
             "type": {
                 "type": "string",
-                "logicalType": "uuid"
+                "logicalType": "string"
             }
         },
         {

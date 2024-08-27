@@ -1,10 +1,11 @@
 package com.food.ordering.system.order.data.access.restaurunt.entity;
 
-import jakarta.persistence.Embeddable;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -12,8 +13,8 @@ import java.util.UUID;
 @AllArgsConstructor
 //@Embeddable
 public class RestaurantEntityId {
-    private UUID restaurantId;
-    private UUID productId;
+    private String restaurantId;
+    private String productId;
 
     @Override
     public boolean equals(Object o) {

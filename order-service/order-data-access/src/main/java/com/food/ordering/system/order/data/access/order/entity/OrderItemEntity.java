@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -23,7 +22,7 @@ public class OrderItemEntity {
     @JoinColumn(name = "ORDER_ID")
     private OrderEntity order;
 
-    private UUID productId;
+    private String productId;
     private BigDecimal price;
     private Integer quantity;
     private BigDecimal subTotal;

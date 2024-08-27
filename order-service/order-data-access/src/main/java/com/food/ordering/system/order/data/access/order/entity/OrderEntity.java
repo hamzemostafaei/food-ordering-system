@@ -7,7 +7,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -19,10 +18,10 @@ import java.util.UUID;
 public class OrderEntity {
 
     @Id
-    private UUID id;
-    private UUID customerId;
-    private UUID restaurantId;
-    private UUID trackingId;
+    private String id;
+    private String customerId;
+    private String restaurantId;
+    private String trackingId;
     private BigDecimal price;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;

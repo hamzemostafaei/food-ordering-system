@@ -40,8 +40,8 @@ public class Order extends ABaseAggregateRoot<OrderId> {
     }
 
     public void initializeOrder() {
-        setId(new OrderId(UUID.randomUUID()));
-        trackingId = new TrackingId(UUID.randomUUID());
+        setId(new OrderId(UUID.randomUUID().toString()));
+        trackingId = new TrackingId(UUID.randomUUID().toString());
         orderStatus = OrderStatus.Pending;
         initializeOrderItems();
     }

@@ -17,7 +17,7 @@ public class OrderMessagingDataMapper {
         Order order = orderCreatedEvent.getOrder();
 
         return PaymentRequestAvroModel.newBuilder()
-                .setId(UUID.randomUUID())
+                .setId(UUID.randomUUID().toString())
                 .setSagaId(null)
                 .setCustomerId(order.getCustomerId().getValue())
                 .setOrderId(order.getId().getValue())
@@ -31,7 +31,7 @@ public class OrderMessagingDataMapper {
         Order order = orderCanceledEvent.getOrder();
 
         return PaymentRequestAvroModel.newBuilder()
-                .setId(UUID.randomUUID())
+                .setId(UUID.randomUUID().toString())
                 .setSagaId(null)
                 .setCustomerId(order.getCustomerId().getValue())
                 .setOrderId(order.getId().getValue())
@@ -44,7 +44,7 @@ public class OrderMessagingDataMapper {
     public RestaurantApprovalRequestAvroModel orderPaidEventToRestaurantRequestAvroModel(OrderPaidEvent orderPaidEvent) {
         Order order = orderPaidEvent.getOrder();
         return RestaurantApprovalRequestAvroModel.newBuilder()
-                .setId(UUID.randomUUID())
+                .setId(UUID.randomUUID().toString())
                 .setSagaId(null)
                 .setOrderId(order.getId().getValue())
                 .setRestaurantId(order.getRestaurantId().getValue())

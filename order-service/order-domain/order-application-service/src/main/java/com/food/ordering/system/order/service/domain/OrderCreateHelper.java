@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Slf4j
 @Component
@@ -28,7 +27,7 @@ public class OrderCreateHelper {
     private final IRestaurantRepository restaurantRepository;
     private final OrderDataMapper orderDataMapper;
 
-    public OrderCreatedEvent persisOrder(CreateOrderCommand createOrderCommand) {
+    public OrderCreatedEvent persistOrder(CreateOrderCommand createOrderCommand) {
         checkCustomer(createOrderCommand.getCustomerId());
         Restaurant restaurant = checkRestaurant(createOrderCommand);
         Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
@@ -49,7 +48,7 @@ public class OrderCreateHelper {
     }
 
 
-    private void checkCustomer(UUID customerId) {
+    private void checkCustomer(String customerId) {
         Optional<Customer> customer = customerRepository.findCustomer(customerId);
         if (customer.isEmpty()) {
             log.warn("Could not find customer with id {}", customerId);
