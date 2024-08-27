@@ -30,7 +30,7 @@ public class OrderEntity {
     @Column(length = 64)
     private String trackingId;
 
-    @Column(length = 20,precision = 2)
+    @Column(precision = 22, scale = 2)
     private BigDecimal price;
 
     @Column(length = 64)

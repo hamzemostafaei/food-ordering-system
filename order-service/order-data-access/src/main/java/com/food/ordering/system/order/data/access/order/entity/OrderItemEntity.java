@@ -26,13 +26,13 @@ public class OrderItemEntity {
     @Column(length = 64)
     private String productId;
 
-    @Column(length = 20,precision = 2)
+    @Column(length = 22,precision = 22,scale = 2)
     private BigDecimal price;
 
-    @Column(length = 20)
+    @Column(precision = 10)
     private Integer quantity;
 
-    @Column(length = 20,precision = 2)
+    @Column(precision = 22, scale = 2)
     private BigDecimal subTotal;
 
     @Override
