@@ -76,7 +76,6 @@ services:
     image: hlebalbau/kafka-manager:stable
     container_name: kafka-manager
     hostname: kafka-manager
-    restart: always
     ports:
       - "9000:9000"
     environment:
