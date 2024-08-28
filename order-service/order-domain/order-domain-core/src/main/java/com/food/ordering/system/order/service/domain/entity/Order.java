@@ -123,7 +123,7 @@ public class Order extends ABaseAggregateRoot<OrderId> {
         if (!orderItem.isPriceValid()) {
             throw new OrderDomainException(
                     String.format(
-                            "Order item price: %s is not valid for product: %s ",
+                            "Order item price: [%s] is not valid for product: [%s] ",
                             orderItem.getPrice().getAmount(),
                             orderItem.getProduct().getId().getValue()
                     )

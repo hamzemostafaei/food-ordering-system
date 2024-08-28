@@ -55,6 +55,17 @@ public class OrderItem extends ABAseEntity<OrderItemId> {
         return orderId;
     }
 
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "product=" + product +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                ", subTotal=" + subTotal +
+                ", orderId=" + orderId +
+                '}';
+    }
+
     public static final class Builder {
         private OrderItemId orderItemId;
         private Product product;
@@ -93,16 +104,5 @@ public class OrderItem extends ABAseEntity<OrderItemId> {
         public OrderItem build() {
             return new OrderItem(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "OrderItem{" +
-                "product=" + product +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                ", subTotal=" + subTotal +
-                ", orderId=" + orderId +
-                '}';
     }
 }

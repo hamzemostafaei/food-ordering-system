@@ -18,7 +18,7 @@ public class OrderMessagingDataMapper {
 
         return PaymentRequestAvroModel.newBuilder()
                 .setId(UUID.randomUUID().toString())
-                .setSagaId(null)
+                .setSagaId(UUID.randomUUID().toString())
                 .setCustomerId(order.getCustomerId().getValue())
                 .setOrderId(order.getId().getValue())
                 .setPrice(order.getPrice().getAmount())
@@ -51,7 +51,7 @@ public class OrderMessagingDataMapper {
                 .setRestaurantOrderStatus(RestaurantOrderStatus.valueOf(order.getOrderStatus().name()))
                 .setProducts(order.getItems().stream().map(orderItem ->
                                 Product.newBuilder()
-                                        .setId(orderItem.getProduct().getId().getValue().toString())
+                                        .setId(orderItem.getProduct().getId().getValue())
                                         .setQuantity(orderItem.getQuantity())
                                         .build())
                         .toList()

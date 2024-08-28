@@ -1,5 +1,7 @@
 package com.food.ordering.system.order.data.access.restaurunt.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +13,13 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@Embeddable
+@Embeddable
 public class RestaurantEntityId {
+
+    @Column(length = 64)
     private String restaurantId;
+
+    @Column(length = 64)
     private String productId;
 
     @Override
