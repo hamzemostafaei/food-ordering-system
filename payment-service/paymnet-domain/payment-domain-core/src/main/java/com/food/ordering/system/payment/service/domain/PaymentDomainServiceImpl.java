@@ -1,5 +1,6 @@
 package com.food.ordering.system.payment.service.domain;
 
+import com.food.ordering.system.domain.event.publisher.IDomainEventPublisher;
 import com.food.ordering.system.domain.value.object.Money;
 import com.food.ordering.system.domain.value.object.PaymentStatus;
 import com.food.ordering.system.payment.service.domain.entity.CreditEntry;
@@ -24,7 +25,12 @@ import static com.food.ordering.system.domain.DomainConstants.UTC;
 public class PaymentDomainServiceImpl implements IPaymentDomainService {
 
     @Override
-    public PaymentEvent validateAndInitiatePayment(Payment payment, CreditEntry creditEntry, List<CreditHistory> creditHistories, List<String> failureMessages) {
+    public PaymentEvent validateAndInitiatePayment(Payment payment,
+                                                   CreditEntry creditEntry,
+                                                   List<CreditHistory> creditHistories,
+                                                   List<String> failureMessages,
+                                                   IDomainEventPublisher<PaymentCompletedEvent> paymentCompletedEventPublisher,
+                                                   IDomainEventPublisher<PaymentFailedEvent> paymentFailedEventPublisher) {
         payment.validatePayment(failureMessages);
         payment.initializePayment();
         validateCreditEntry(payment, creditEntry, failureMessages);
@@ -35,16 +41,21 @@ public class PaymentDomainServiceImpl implements IPaymentDomainService {
         if (failureMessages.isEmpty()) {
             log.info("Payment is initiated for order id: {}", payment.getOrderId().getValue());
             payment.updateStatus(PaymentStatus.Completed);
-            return new PaymentCompletedEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)));
+            return new PaymentCompletedEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)),paymentCompletedEventPublisher);
         } else {
             log.info("Payment initiation is failed for order id: {}", payment.getOrderId().getValue());
             payment.updateStatus(PaymentStatus.Failed);
-            return new PaymentFailedEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)), failureMessages);
+            return new PaymentFailedEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)), failureMessages,paymentFailedEventPublisher);
         }
     }
 
     @Override
-    public PaymentEvent validateAndCancelPayment(Payment payment, CreditEntry creditEntry, List<CreditHistory> creditHistories, List<String> failureMessages) {
+    public PaymentEvent validateAndCancelPayment(Payment payment,
+                                                 CreditEntry creditEntry,
+                                                 List<CreditHistory> creditHistories,
+                                                 List<String> failureMessages,
+                                                 IDomainEventPublisher<PaymentCancelledEvent> paymentCancelledEventPublisher,
+                                                 IDomainEventPublisher<PaymentFailedEvent> paymentFailedEventPublisher) {
         payment.validatePayment(failureMessages);
         addCreditEntry(payment, creditEntry);
         updateCreditHistory(payment, creditHistories, TransactionType.Credit);
@@ -52,11 +63,11 @@ public class PaymentDomainServiceImpl implements IPaymentDomainService {
         if (failureMessages.isEmpty()) {
             log.info("Payment is cancelled for order id: {}", payment.getOrderId().getValue());
             payment.updateStatus(PaymentStatus.Cancelled);
-            return new PaymentCancelledEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)));
+            return new PaymentCancelledEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)),paymentCancelledEventPublisher);
         } else {
             log.info("Payment cancellation is failed for order id: {}", payment.getOrderId().getValue());
             payment.updateStatus(PaymentStatus.Failed);
-            return new PaymentFailedEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)), failureMessages);
+            return new PaymentFailedEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)), failureMessages,paymentFailedEventPublisher);
         }
     }
 

@@ -4,7 +4,7 @@ import com.food.ordering.system.kafka.order.avro.model.*;
 import com.food.ordering.system.order.service.domain.dto.message.PaymentResponse;
 import com.food.ordering.system.order.service.domain.dto.message.RestaurantApprovalResponse;
 import com.food.ordering.system.order.service.domain.entity.Order;
-import com.food.ordering.system.order.service.domain.event.OrderCanceledEvent;
+import com.food.ordering.system.order.service.domain.event.OrderCancelledEvent;
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent;
 import com.food.ordering.system.order.service.domain.event.OrderPaidEvent;
 import org.springframework.stereotype.Component;
@@ -27,8 +27,8 @@ public class OrderMessagingDataMapper {
                 .build();
     }
 
-    public PaymentRequestAvroModel orderCancelledEventToPaymentRequestAvroModel(OrderCanceledEvent orderCanceledEvent) {
-        Order order = orderCanceledEvent.getOrder();
+    public PaymentRequestAvroModel orderCancelledEventToPaymentRequestAvroModel(OrderCancelledEvent orderCancelledEvent) {
+        Order order = orderCancelledEvent.getOrder();
 
         return PaymentRequestAvroModel.newBuilder()
                 .setId(UUID.randomUUID().toString())
@@ -36,7 +36,7 @@ public class OrderMessagingDataMapper {
                 .setCustomerId(order.getCustomerId().getValue())
                 .setOrderId(order.getId().getValue())
                 .setPrice(order.getPrice().getAmount())
-                .setCreatedAt(orderCanceledEvent.getCreatedAt().toInstant())
+                .setCreatedAt(orderCancelledEvent.getCreatedAt().toInstant())
                 .setPaymentOrderStatus(PaymentOrderStatus.CANCELLED)
                 .build();
     }

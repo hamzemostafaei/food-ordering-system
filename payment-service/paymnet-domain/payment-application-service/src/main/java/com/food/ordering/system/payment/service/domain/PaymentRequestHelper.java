@@ -9,6 +9,9 @@ import com.food.ordering.system.payment.service.domain.event.PaymentEvent;
 import com.food.ordering.system.payment.service.domain.exception.PaymentApplicationServiceException;
 import com.food.ordering.system.payment.service.domain.exception.PaymentNotFoundException;
 import com.food.ordering.system.payment.service.domain.mapper.PaymentDataMapper;
+import com.food.ordering.system.payment.service.domain.ports.output.message.publisher.IPaymentCancelledMessagePublisher;
+import com.food.ordering.system.payment.service.domain.ports.output.message.publisher.IPaymentCompletedMessagePublisher;
+import com.food.ordering.system.payment.service.domain.ports.output.message.publisher.IPaymentFailedMessagePublisher;
 import com.food.ordering.system.payment.service.domain.ports.output.respository.ICreditEntryRepository;
 import com.food.ordering.system.payment.service.domain.ports.output.respository.ICreditHistoryRepository;
 import com.food.ordering.system.payment.service.domain.ports.output.respository.IPaymentRepository;
@@ -32,6 +35,9 @@ public class PaymentRequestHelper {
     private final IPaymentRepository paymentRepository;
     private final ICreditEntryRepository creditEntryRepository;
     private final ICreditHistoryRepository creditHistoryRepository;
+    private final IPaymentCompletedMessagePublisher paymentCompletedMessagePublisher;
+    private final IPaymentCancelledMessagePublisher paymentCancelledMessagePublisher;
+    private final IPaymentFailedMessagePublisher paymentFailedMessagePublisher;
 
     public PaymentEvent persistPayment(PaymentRequest paymentRequest) {
 
@@ -42,7 +48,13 @@ public class PaymentRequestHelper {
         List<CreditHistory> creditHistories = getCreditHistory(payment.getCustomerId());
         List<String> failureMessages = new ArrayList<>();
         PaymentEvent paymentEvent =
-                paymentDomainService.validateAndInitiatePayment(payment, creditEntry, creditHistories, failureMessages);
+                paymentDomainService.validateAndInitiatePayment(
+                        payment,
+                        creditEntry,
+                        creditHistories,
+                        failureMessages,
+                        paymentCompletedMessagePublisher,
+                        paymentFailedMessagePublisher);
 
         persistDbObjects(payment, creditEntry, creditHistories, failureMessages);
 
@@ -63,7 +75,14 @@ public class PaymentRequestHelper {
         List<CreditHistory> creditHistories = getCreditHistory(payment.getCustomerId());
         List<String> failureMessages = new ArrayList<>();
         PaymentEvent paymentEvent = paymentDomainService
-                .validateAndCancelPayment(payment, creditEntry, creditHistories, failureMessages);
+                .validateAndCancelPayment(
+                        payment,
+                        creditEntry,
+                        creditHistories,
+                        failureMessages,
+                        paymentCancelledMessagePublisher,
+                        paymentFailedMessagePublisher);
+
         persistDbObjects(payment, creditEntry, creditHistories, failureMessages);
 
         return paymentEvent;

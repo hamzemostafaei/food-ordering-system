@@ -1,9 +1,10 @@
 package com.food.ordering.system.order.service.domain;
 
+import com.food.ordering.system.domain.event.publisher.IDomainEventPublisher;
 import com.food.ordering.system.order.service.domain.entity.Order;
 import com.food.ordering.system.order.service.domain.entity.Product;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
-import com.food.ordering.system.order.service.domain.event.OrderCanceledEvent;
+import com.food.ordering.system.order.service.domain.event.OrderCancelledEvent;
 import com.food.ordering.system.order.service.domain.event.OrderCreatedEvent;
 import com.food.ordering.system.order.service.domain.event.OrderPaidEvent;
 import com.food.ordering.system.order.service.domain.exception.OrderDomainException;
@@ -18,19 +19,21 @@ import static com.food.ordering.system.domain.DomainConstants.UTC;
 @Slf4j
 public class OrderDomainServiceImpl implements IOrderDomainService {
     @Override
-    public OrderCreatedEvent validateAndInitiateOrder(Order order, Restaurant restaurant) {
+    public OrderCreatedEvent validateAndInitiateOrder(Order order,
+                                                      Restaurant restaurant,
+                                                      IDomainEventPublisher<OrderCreatedEvent> orderCreatedEventPublisher) {
         validateRestaurant(restaurant);
         setProductOrderInformation(order, restaurant);
         order.validateOrder();
         order.initializeOrder();
-        return new OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
+        return new OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of(UTC)), orderCreatedEventPublisher);
     }
 
     @Override
-    public OrderPaidEvent payOrder(Order order) {
+    public OrderPaidEvent payOrder(Order order,IDomainEventPublisher<OrderPaidEvent> orderPaidEventPublisher) {
         order.pay();
         log.info("Order with id:{} is paid", order.getId().getValue());
-        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
+        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC)),orderPaidEventPublisher);
     }
 
     @Override
@@ -40,9 +43,11 @@ public class OrderDomainServiceImpl implements IOrderDomainService {
     }
 
     @Override
-    public OrderCanceledEvent cancelOrderPayment(Order order, List<String> failureMessages) {
+    public OrderCancelledEvent cancelOrderPayment(Order order,
+                                                  List<String> failureMessages,
+                                                  IDomainEventPublisher<OrderCancelledEvent> orderCancelledEventPublisher) {
         order.initCancel(failureMessages);
-        return new OrderCanceledEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
+        return new OrderCancelledEvent(order, ZonedDateTime.now(ZoneId.of(UTC)), orderCancelledEventPublisher);
     }
 
     @Override
