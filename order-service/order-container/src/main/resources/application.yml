@@ -28,7 +28,7 @@ spring:
     username: fos_order
     password: 123456
     hikari:
-      pool-name: BankingSystemMainPool
+      pool-name: FoodOrderingSystemOrderPool
       driver-class-name: oracle.jdbc.OracleDriver
       minimum-idle: 4
       maximum-pool-size: 16
