@@ -11,17 +11,15 @@ import java.util.List;
 import java.util.UUID;
 
 public class Order extends ABaseAggregateRoot<OrderId> {
+    public static final String FAILURE_MESSAGE_DELIMITER = ",";
     private final CustomerId customerId;
     private final RestaurantId restaurantId;
     private final StreetAddress deliveryAddress;
     private final Money price;
     private final List<OrderItem> items;
-
     private TrackingId trackingId;
     private OrderStatus orderStatus;
     private List<String> failureMessages;
-
-    public static final String FAILURE_MESSAGE_DELIMITER = ",";
 
     private Order(Builder builder) {
         super.setId(builder.orderId);
@@ -184,6 +182,20 @@ public class Order extends ABaseAggregateRoot<OrderId> {
         return failureMessages;
     }
 
+    @Override
+    public String toString() {
+        return "Order{" +
+                "customerId=" + customerId +
+                ", restaurantId=" + restaurantId +
+                ", deliveryAddress=" + deliveryAddress +
+                ", price=" + price +
+                ", items=" + items +
+                ", trackingId=" + trackingId +
+                ", orderStatus=" + orderStatus +
+                ", failureMessages=" + failureMessages +
+                '}';
+    }
+
     public static final class Builder {
         private OrderId orderId;
         private CustomerId customerId;
@@ -246,19 +258,5 @@ public class Order extends ABaseAggregateRoot<OrderId> {
         public Order build() {
             return new Order(this);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "customerId=" + customerId +
-                ", restaurantId=" + restaurantId +
-                ", deliveryAddress=" + deliveryAddress +
-                ", price=" + price +
-                ", items=" + items +
-                ", trackingId=" + trackingId +
-                ", orderStatus=" + orderStatus +
-                ", failureMessages=" + failureMessages +
-                '}';
     }
 }
