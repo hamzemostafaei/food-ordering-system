@@ -14,5 +14,4 @@ public enum OrderStatus {
         this.statusCode = statusCode;
     }
 
-
 }
