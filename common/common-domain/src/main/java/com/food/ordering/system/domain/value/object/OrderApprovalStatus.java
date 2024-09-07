@@ -1,9 +1,8 @@
 package com.food.ordering.system.domain.value.object;
 
 public enum OrderApprovalStatus {
-    Completed(0),
-    Cancelled(1),
-    Failed(2);
+    Approved(0),
+    Rejected(1);
 
     private final int statusCode;
 
