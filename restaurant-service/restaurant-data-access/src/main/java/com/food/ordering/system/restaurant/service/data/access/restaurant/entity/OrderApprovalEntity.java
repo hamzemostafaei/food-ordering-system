@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "order_approval", schema = "restaurant")
+@Table(name = "order_approval", schema = "fos_restaurant")
 public class OrderApprovalEntity {
     @Id
     private String id;

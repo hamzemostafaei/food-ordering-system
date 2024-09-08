@@ -1,0 +1,84 @@
+<configuration debug="true" scan="true" scanPeriod="5 seconds">
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <jmxConfigurator/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%X{NODE-ID}]-[%X{TRACKING-ID}]-${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>${CONSOLE_LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./log/food_ordering_system.log</file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>
+                ./log/archived/food_ordering_system.%d{yyyy-MM-dd}.%i.log.zip
+            </fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>20</maxHistory>
+            <totalSizeCap>2000MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[%X{NODE-ID}]-[%X{TRACKING-ID}]-${FILE_LOG_PATTERN}</pattern>
+            <charset>${FILE_LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="DA_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./log/da/food_ordering_system-da1.log</file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>
+                ./log/da/archived/food_ordering_system-da1.%d{yyyy-MM-dd}.%i.log.zip
+            </fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>20</maxHistory>
+            <totalSizeCap>2000MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[%X{traceId:-}]-[%X{spanId:-}]-[%X{NODE-ID}]-[%X{TRACKING-ID}]-${FILE_LOG_PATTERN}</pattern>
+            <charset>${FILE_LOG_CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <logger name="org.hibernate.SQL" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="STDOUT"/>
+<!--        <appender-ref ref="DA_FILE"/>-->
+    </logger>
+
+    <logger name="org.hibernate.orm.jdbc.bind" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="STDOUT"/>
+<!--        <appender-ref ref="DA_FILE"/>-->
+    </logger>
+
+    <logger name="org.hibernate.orm.jdbc.extract" additivity="false">
+        <level value="trace"/>
+        <appender-ref ref="STDOUT"/>
+<!--        <appender-ref ref="DA_FILE"/>-->
+    </logger>
+
+    <logger name="org.hibernate.SQL_SLOW" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="STDOUT"/>
+<!--        <appender-ref ref="DA_FILE"/>-->
+    </logger>
+
+    <logger name="com.zaxxer" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+<!--        <appender-ref ref="FILE"/>-->
+    </root>
+</configuration>

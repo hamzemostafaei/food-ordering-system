@@ -14,7 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(RestaurantEntityId.class)
-@Table(name = "order_restaurant_m_view", schema = "restaurant")
+@Table(name = "order_restaurant_m_view", schema = "fos_restaurant")
 public class RestaurantEntity {
     @Id
     @Column(length = 64)
