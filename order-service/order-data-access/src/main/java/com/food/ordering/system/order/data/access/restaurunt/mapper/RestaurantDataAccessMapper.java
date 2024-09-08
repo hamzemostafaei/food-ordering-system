@@ -1,10 +1,10 @@
 package com.food.ordering.system.order.data.access.restaurunt.mapper;
 
+import com.food.ordering.system.data.access.restaurant.entity.RestaurantEntity;
+import com.food.ordering.system.data.access.restaurant.exception.RestaurantDataAccessException;
 import com.food.ordering.system.domain.value.object.Money;
 import com.food.ordering.system.domain.value.object.ProductId;
 import com.food.ordering.system.domain.value.object.RestaurantId;
-import com.food.ordering.system.order.data.access.restaurunt.entity.RestaurantEntity;
-import com.food.ordering.system.order.data.access.restaurunt.exception.RestaurantDataAccessException;
 import com.food.ordering.system.order.service.domain.entity.Product;
 import com.food.ordering.system.order.service.domain.entity.Restaurant;
 import org.springframework.stereotype.Component;
@@ -29,11 +29,11 @@ public class RestaurantDataAccessMapper {
         List<Product> restaurantProducts = restaurantEntities.stream()
                 .map(entity ->
                         new Product(
-                                new ProductId(entity.getId().getProductId()), entity.getProductName(), new Money(entity.getProductPrice()))
+                                new ProductId(entity.getProductId()), entity.getProductName(), new Money(entity.getProductPrice()))
                 ).toList();
 
         return Restaurant.builder()
-                .restaurantId(new RestaurantId(restaurantEntity.getId().getRestaurantId()))
+                .restaurantId(new RestaurantId(restaurantEntity.getRestaurantId()))
                 .products(restaurantProducts)
                 .active(restaurantEntity.getRestaurantActive())
                 .build();

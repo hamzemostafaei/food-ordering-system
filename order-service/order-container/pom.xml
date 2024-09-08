@@ -40,6 +40,10 @@
             <groupId>com.food.ordering.system</groupId>
             <artifactId>order-data-access</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.food.ordering.system</groupId>
+            <artifactId>common-data-access</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
