@@ -34,7 +34,6 @@ public class OrderEntity {
     private BigDecimal price;
 
     @Column(length = 64)
-    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     @Column(length = 256)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="localhost-customer" uuid="ff355d5c-2dc9-4d29-9ac8-184ff55066b2">
+    <data-source source="LOCAL" name="customer" uuid="ff355d5c-2dc9-4d29-9ac8-184ff55066b2">
       <driver-ref>oracle.19</driver-ref>
       <synchronize>true</synchronize>
       <auto-commit>false</auto-commit>
@@ -15,7 +15,7 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="localhost-order" uuid="918c3d22-3912-432e-bbf2-82ccfe091e20">
+    <data-source source="LOCAL" name="order" uuid="918c3d22-3912-432e-bbf2-82ccfe091e20">
       <driver-ref>oracle.19</driver-ref>
       <synchronize>true</synchronize>
       <auto-commit>false</auto-commit>
@@ -29,7 +29,21 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="localhost-restaurant" uuid="21054d2a-6ee2-480e-b612-55c4f39fa382">
+    <data-source source="LOCAL" name="restaurant" uuid="21054d2a-6ee2-480e-b612-55c4f39fa382">
+      <driver-ref>oracle.19</driver-ref>
+      <synchronize>true</synchronize>
+      <auto-commit>false</auto-commit>
+      <jdbc-driver>oracle.jdbc.OracleDriver</jdbc-driver>
+      <jdbc-url>jdbc:oracle:thin:@//localhost:1521/ORCLPDB</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="com.intellij.clouds.kubernetes.db.host.port" />
+        <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
+        <property name="com.intellij.clouds.kubernetes.db.resource.type" value="Deployment" />
+        <property name="com.intellij.clouds.kubernetes.db.container.port" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="payment" uuid="b6a881e1-3643-483b-ad93-58476724d3a2">
       <driver-ref>oracle.19</driver-ref>
       <synchronize>true</synchronize>
       <auto-commit>false</auto-commit>

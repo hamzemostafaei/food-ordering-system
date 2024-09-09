@@ -1,18 +1,21 @@
 package com.food.ordering.system.order.data.access.order.mapper;
+
 import com.food.ordering.system.domain.value.object.*;
 import com.food.ordering.system.order.data.access.order.entity.OrderAddressEntity;
+import com.food.ordering.system.order.data.access.order.entity.OrderEntity;
 import com.food.ordering.system.order.data.access.order.entity.OrderItemEntity;
 import com.food.ordering.system.order.service.domain.entity.Order;
-import com.food.ordering.system.order.data.access.order.entity.OrderEntity;
 import com.food.ordering.system.order.service.domain.entity.OrderItem;
 import com.food.ordering.system.order.service.domain.entity.Product;
 import com.food.ordering.system.order.service.domain.value.object.OrderItemId;
 import com.food.ordering.system.order.service.domain.value.object.StreetAddress;
 import com.food.ordering.system.order.service.domain.value.object.TrackingId;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,9 +52,10 @@ public class OrderDataAccessMapper {
                 .items(orderItemEntitiesToOrderItems(orderEntity.getItems()))
                 .trackingId(new TrackingId(orderEntity.getTrackingId()))
                 .orderStatus(orderEntity.getOrderStatus())
-                .failureMessages(orderEntity.getFailureMessages().isEmpty() ? new ArrayList<>() :
-                        new ArrayList<>(Arrays.asList(orderEntity.getFailureMessages()
-                                .split(FAILURE_MESSAGE_DELIMITER))))
+                .failureMessages(
+                        StringUtils.isEmpty(orderEntity.getFailureMessages()) ? Collections.emptyList() :
+                                new ArrayList<>(Arrays.asList(orderEntity.getFailureMessages().split(FAILURE_MESSAGE_DELIMITER)))
+                )
                 .build();
     }
 

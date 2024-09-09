@@ -1,5 +1,6 @@
 package com.food.ordering.system.payment.service.data.access.creditentry.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -19,8 +20,13 @@ import java.util.Objects;
 public class CreditEntryEntity {
 
     @Id
+    @Column(length = 64)
     private String id;
+
+    @Column(length = 64)
     private String customerId;
+
+    @Column(precision = 22, scale = 2)
     private BigDecimal totalCreditAmount;
 
     public BigDecimal getTotalCreditAmount() {

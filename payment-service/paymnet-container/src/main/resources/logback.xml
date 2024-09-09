@@ -15,11 +15,11 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./log/restaurant-service.log</file>
+        <file>./log/payment-service.log</file>
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>
-                ./log/archived/restaurant-service.%d{yyyy-MM-dd}.%i.log.zip
+                ./log/archived/payment-service.%d{yyyy-MM-dd}.%i.log.zip
             </fileNamePattern>
             <maxFileSize>100MB</maxFileSize>
             <maxHistory>20</maxHistory>
@@ -32,11 +32,11 @@
     </appender>
 
     <appender name="DA_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./log/da/restaurant-service-da1.log</file>
+        <file>./log/da/payment-service-da1.log</file>
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>
-                ./log/da/archived/restaurant-service-da1.%d{yyyy-MM-dd}.%i.log.zip
+                ./log/da/archived/payment-service-da1.%d{yyyy-MM-dd}.%i.log.zip
             </fileNamePattern>
             <maxFileSize>100MB</maxFileSize>
             <maxHistory>20</maxHistory>
