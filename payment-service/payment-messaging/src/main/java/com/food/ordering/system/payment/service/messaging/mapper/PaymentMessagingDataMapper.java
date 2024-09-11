@@ -46,7 +46,7 @@ public class PaymentMessagingDataMapper {
                 .orderId(paymentRequestAvroModel.getOrderId())
                 .price(paymentRequestAvroModel.getPrice())
                 .createdAt(paymentRequestAvroModel.getCreatedAt())
-                .paymentOrderStatus(PaymentOrderStatus.valueOf(paymentRequestAvroModel.getPaymentOrderStatus().name()))
+                .paymentOrderStatus(PaymentOrderStatus.getByName(paymentRequestAvroModel.getPaymentOrderStatus().name()))
                 .build();
     }
 
@@ -61,7 +61,7 @@ public class PaymentMessagingDataMapper {
                 .setOrderId(payment.getOrderId().getValue())
                 .setPrice(payment.getPrice().getAmount())
                 .setCreatedAt(createdAt.toInstant())
-                .setPaymentStatus(PaymentStatus.valueOf(payment.getPaymentStatus().name()))
+                .setPaymentStatus(PaymentStatus.valueOf(payment.getPaymentStatus().getName()))
                 .setFailureMessages(failureMessages)
                 .build();
     }

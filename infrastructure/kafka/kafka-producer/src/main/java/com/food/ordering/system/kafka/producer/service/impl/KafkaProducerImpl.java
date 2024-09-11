@@ -6,6 +6,7 @@ import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -25,7 +26,9 @@ public class KafkaProducerImpl<K extends Serializable, V extends SpecificRecordB
     public void send(String topicName, K key, V message, CompletableFuture<SendResult<K, V>> callback) {
         log.info("Sending message={} to topic={}", message, topicName);
         try {
-            CompletableFuture<SendResult<K, V>> kafkaCompletableFuture = kafkaTemplate.send(topicName, key, message);
+            ProducerRecord<K, V> producerRecord = new ProducerRecord<>(topicName, key, message);
+
+            CompletableFuture<SendResult<K, V>> kafkaCompletableFuture = kafkaTemplate.send(producerRecord);
 
             kafkaCompletableFuture.whenComplete((result, throwable) -> {
                 if (throwable != null) {
