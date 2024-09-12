@@ -44,7 +44,12 @@ public class KafkaProducerImpl<K extends Serializable, V extends SpecificRecordB
 
                     boolean completed = callback.complete(result);
                     if (completed) {
-                        log.info("Received successful response from kafka for message with key: [{}].", key);
+                        log.info("Received successful response from kafka for message with key: [{}], topic: [{}], partition: [{}], offset: [{}].",
+                                key,
+                                result.getRecordMetadata().topic(),
+                                result.getRecordMetadata().partition(),
+                                result.getRecordMetadata().offset()
+                        );
                     } else {
                         log.info("Sending message with key [{}] was unsuccessful", key);
                     }

@@ -29,7 +29,7 @@ public class PayOrderKafkaMessagePublisher implements IOrderPaidRestaurantReques
 
         try {
             RestaurantApprovalRequestAvroModel restaurantApprovalRequestAvroModel = orderMessagingDataMapper.orderPaidEventToRestaurantRequestAvroModel(domainEvent);
-            String topicName = orderServiceConfigData.getPaymentRequestTopicName();
+            String topicName = orderServiceConfigData.getRestaurantApprovalRequestTopicName();
 
             kafkaProducer.send(
                     topicName,

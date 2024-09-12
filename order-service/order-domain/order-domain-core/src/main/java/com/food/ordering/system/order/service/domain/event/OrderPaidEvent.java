@@ -9,7 +9,10 @@ public class OrderPaidEvent extends ABaseOrderEvent {
 
     private final IDomainEventPublisher<OrderPaidEvent> orderPaidEventPublisher;
 
-    public OrderPaidEvent(Order order, ZonedDateTime createdAt, IDomainEventPublisher<OrderPaidEvent> orderPaidEventPublisher) {
+    public OrderPaidEvent(Order order,
+                          ZonedDateTime createdAt,
+                          IDomainEventPublisher<OrderPaidEvent> orderPaidEventPublisher) {
+
         super(order, createdAt);
         this.orderPaidEventPublisher = orderPaidEventPublisher;
     }

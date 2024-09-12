@@ -22,7 +22,7 @@ public class RestaurantApprovalResponseMessageListenerImpl implements IRestauran
     @Override
     public void orderApproved(RestaurantApprovalResponse restaurantApprovalResponse) {
         orderApprovalSaga.process(restaurantApprovalResponse);
-        log.info("Order approved response: {}", restaurantApprovalResponse);
+        log.info("Order approved Saga process operation is completed for order id: [{}]", restaurantApprovalResponse.getOrderId());
     }
 
     @Override

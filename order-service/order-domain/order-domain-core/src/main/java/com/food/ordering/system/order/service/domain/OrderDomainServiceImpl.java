@@ -18,6 +18,7 @@ import static com.food.ordering.system.domain.DomainConstants.UTC;
 
 @Slf4j
 public class OrderDomainServiceImpl implements IOrderDomainService {
+
     @Override
     public OrderCreatedEvent validateAndInitiateOrder(Order order,
                                                       Restaurant restaurant,

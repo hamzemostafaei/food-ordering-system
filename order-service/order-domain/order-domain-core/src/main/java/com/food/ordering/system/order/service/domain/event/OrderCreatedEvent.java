@@ -12,6 +12,7 @@ public class OrderCreatedEvent extends ABaseOrderEvent {
     public OrderCreatedEvent(Order order,
                              ZonedDateTime createdAt,
                              IDomainEventPublisher<OrderCreatedEvent> orderCreatedEventPublisher) {
+
         super(order, createdAt);
         this.orderCreatedEventPublisher = orderCreatedEventPublisher;
     }

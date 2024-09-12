@@ -32,7 +32,7 @@ public class OrderMessagingDataMapper {
 
         return PaymentRequestAvroModel.newBuilder()
                 .setId(UUID.randomUUID().toString())
-                .setSagaId(null)
+                .setSagaId("")
                 .setCustomerId(order.getCustomerId().getValue())
                 .setOrderId(order.getId().getValue())
                 .setPrice(order.getPrice().getAmount())
@@ -45,10 +45,10 @@ public class OrderMessagingDataMapper {
         Order order = orderPaidEvent.getOrder();
         return RestaurantApprovalRequestAvroModel.newBuilder()
                 .setId(UUID.randomUUID().toString())
-                .setSagaId(null)
+                .setSagaId("")
                 .setOrderId(order.getId().getValue())
                 .setRestaurantId(order.getRestaurantId().getValue())
-                .setRestaurantOrderStatus(RestaurantOrderStatus.valueOf(order.getOrderStatus().name()))
+                .setRestaurantOrderStatus(RestaurantOrderStatus.valueOf(order.getOrderStatus().getName()))
                 .setProducts(order.getItems().stream().map(orderItem ->
                                 Product.newBuilder()
                                         .setId(orderItem.getProduct().getId().getValue())
@@ -82,8 +82,9 @@ public class OrderMessagingDataMapper {
                 .restaurantId(restaurantApprovalResponseAvroModel.getRestaurantId())
                 .orderId(restaurantApprovalResponseAvroModel.getOrderId())
                 .createdAt(restaurantApprovalResponseAvroModel.getCreatedAt())
-                .orderApprovalStatus(com.food.ordering.system.domain.value.object.OrderApprovalStatus.valueOf(
-                        restaurantApprovalResponseAvroModel.getOrderApprovalStatus().name()))
+                .orderApprovalStatus(
+                        com.food.ordering.system.domain.value.object.OrderApprovalStatus.getByName(restaurantApprovalResponseAvroModel.getOrderApprovalStatus().name())
+                )
                 .failureMessages(restaurantApprovalResponseAvroModel.getFailureMessages())
                 .build();
     }
