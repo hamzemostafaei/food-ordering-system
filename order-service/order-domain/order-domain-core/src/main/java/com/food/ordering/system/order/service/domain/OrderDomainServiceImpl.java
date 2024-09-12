@@ -30,16 +30,16 @@ public class OrderDomainServiceImpl implements IOrderDomainService {
     }
 
     @Override
-    public OrderPaidEvent payOrder(Order order,IDomainEventPublisher<OrderPaidEvent> orderPaidEventPublisher) {
+    public OrderPaidEvent payOrder(Order order, IDomainEventPublisher<OrderPaidEvent> orderPaidEventPublisher) {
         order.pay();
-        log.info("Order with id:{} is paid", order.getId().getValue());
-        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC)),orderPaidEventPublisher);
+        log.info("Order with id: [{}] is paid", order.getId().getValue());
+        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC)), orderPaidEventPublisher);
     }
 
     @Override
     public void approveOrder(Order order) {
         order.approve();
-        log.info("Order with Id:{} is approved", order.getId().getValue());
+        log.info("Order with Id: [{}] is approved", order.getId().getValue());
     }
 
     @Override
@@ -66,17 +66,15 @@ public class OrderDomainServiceImpl implements IOrderDomainService {
     private void setProductOrderInformation(Order order, Restaurant restaurant) {
         order
                 .getItems()
-                .forEach((orderItem) -> {
-                    restaurant.getProducts()
-                            .forEach((restaurantProduct) -> {
-                                Product currentProduct = orderItem.getProduct();
-                                if (currentProduct.equals(restaurantProduct)) {
-                                    currentProduct.updateWithConfirmNameAndPrice(
-                                            restaurantProduct.getName(),
-                                            restaurantProduct.getPrice()
-                                    );
-                                }
-                            });
-                });
+                .forEach((orderItem) -> restaurant.getProducts()
+                        .forEach((restaurantProduct) -> {
+                            Product currentProduct = orderItem.getProduct();
+                            if (currentProduct.equals(restaurantProduct)) {
+                                currentProduct.updateWithConfirmNameAndPrice(
+                                        restaurantProduct.getName(),
+                                        restaurantProduct.getPrice()
+                                );
+                            }
+                        }));
     }
 }

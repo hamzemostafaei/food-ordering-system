@@ -24,7 +24,7 @@ public class KafkaProducerImpl<K extends Serializable, V extends SpecificRecordB
 
     @Override
     public void send(String topicName, K key, V message, CompletableFuture<SendResult<K, V>> callback) {
-        log.info("Sending message={} to topic={}", message, topicName);
+        log.info("Sending message=[{}] to topic=[{}]", message, topicName);
         try {
             ProducerRecord<K, V> producerRecord = new ProducerRecord<>(topicName, key, message);
 
@@ -32,18 +32,26 @@ public class KafkaProducerImpl<K extends Serializable, V extends SpecificRecordB
 
             kafkaCompletableFuture.whenComplete((result, throwable) -> {
                 if (throwable != null) {
-                    log.error("Error sending message to Kafka with key: {}, message: {}. Exception: {}", key, message, throwable.getMessage());
+                    log.error("Error sending message to Kafka with key: [{}], message: [{}]. Exception: [{}]", key, message, throwable.getMessage());
                     callback.completeExceptionally(throwable);
                 } else {
-                    log.info("Message sent successfully to topic={}, partition={}, offset={}",
+                    log.info("Message with key: [{}] sent successfully to topic: [{}], partition: [{}], offset: [{}]",
+                            key,
                             result.getRecordMetadata().topic(),
                             result.getRecordMetadata().partition(),
-                            result.getRecordMetadata().offset());
-                    callback.complete(result);
+                            result.getRecordMetadata().offset()
+                    );
+
+                    boolean completed = callback.complete(result);
+                    if (completed) {
+                        log.info("Received successful response from kafka for message with key: [{}].", key);
+                    } else {
+                        log.info("Sending message with key [{}] was unsuccessful", key);
+                    }
                 }
             });
         } catch (KafkaException e) {
-            log.error("Error on kafka producer with key: {}, message: {} and exception: {}", key, message, e.getMessage());
+            log.error("Error on kafka producer with key: [{}], message: [{}] and exception: [{}]", key, message, e.getMessage());
             throw new KafkaProducerException(String.format("Error on kafka producer with key: %s  and message: %s", key, message));
         }
     }

@@ -27,7 +27,7 @@ public class PaymentCancelledKafkaMessagePublisher implements IPaymentCancelledM
     @Override
     public void publish(PaymentCancelledEvent paymentCancelledEvent) {
         String orderId = paymentCancelledEvent.getPayment().getId().getValue();
-        log.info("Received PaymentCancelledEvent for orderId: {}", orderId);
+        log.info("Received PaymentCancelledEvent for orderId: [{}]", orderId);
 
         try {
             CompletableFuture<SendResult<String, PaymentResponseAvroModel>> callbackFuture = new CompletableFuture<>();
@@ -40,9 +40,9 @@ public class PaymentCancelledKafkaMessagePublisher implements IPaymentCancelledM
                     callbackFuture
             );
 
-            log.info("PaymentCancelledEvent sent to Kafka for orderId: {}", orderId);
+            log.info("PaymentCancelledEvent sent to Kafka for orderId: [{}]", orderId);
         } catch (Exception e) {
-            log.error("Error while sending PaymentCancelledEvent to Kafka for orderId: {}", orderId, e);
+            log.error("Error while sending PaymentCancelledEvent to Kafka for orderId: [{}]", orderId, e);
         }
     }
 }

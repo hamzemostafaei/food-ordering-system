@@ -23,23 +23,23 @@ public class OrderPaymentSaga implements ISagaStep<PaymentResponse, OrderPaidEve
     @Override
     @Transactional
     public OrderPaidEvent process(PaymentResponse paymentResponse) {
-        log.info("Completing payment for order with id {}", paymentResponse.getOrderId());
+        log.info("Completing payment for order with id [{}]", paymentResponse.getOrderId());
 
         Order order = orderSagaHelper.findOrder(paymentResponse.getOrderId());
         OrderPaidEvent orderPaidEvent = orderDomainService.payOrder(order, orderPaidRestaurantRequestMessagePublisher);
         orderSagaHelper.saveOrder(order);
-        log.info("Order with id {} has been paid successfully", paymentResponse.getOrderId());
+        log.info("Order with id [{}] has been paid successfully", paymentResponse.getOrderId());
         return orderPaidEvent;
     }
 
     @Override
     @Transactional
     public EmptyEvent rollback(PaymentResponse paymentResponse) {
-        log.info("Cancelling order with id {}", paymentResponse.getOrderId());
+        log.info("Cancelling order with id [{}]", paymentResponse.getOrderId());
         Order order = orderSagaHelper.findOrder(paymentResponse.getOrderId());
         orderDomainService.cancelOrder(order, paymentResponse.getFailureMessages());
         orderSagaHelper.saveOrder(order);
-        log.info("Order with id {} has been cancelled", paymentResponse.getOrderId());
+        log.info("Order with id [{}] has been cancelled", paymentResponse.getOrderId());
         return EmptyEvent.INSTANCE;
     }
 }
