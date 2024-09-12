@@ -49,25 +49,25 @@
     </appender>
 
     <logger name="org.hibernate.SQL" additivity="false">
-        <level value="debug"/>
+        <level value="info"/>
         <appender-ref ref="STDOUT"/>
 <!--        <appender-ref ref="DA_FILE"/>-->
     </logger>
 
     <logger name="org.hibernate.orm.jdbc.bind" additivity="false">
-        <level value="trace"/>
+        <level value="off"/>
         <appender-ref ref="STDOUT"/>
 <!--        <appender-ref ref="DA_FILE"/>-->
     </logger>
 
     <logger name="org.hibernate.orm.jdbc.extract" additivity="false">
-        <level value="trace"/>
+        <level value="off"/>
         <appender-ref ref="STDOUT"/>
 <!--        <appender-ref ref="DA_FILE"/>-->
     </logger>
 
     <logger name="org.hibernate.SQL_SLOW" additivity="false">
-        <level value="debug"/>
+        <level value="info"/>
         <appender-ref ref="STDOUT"/>
 <!--        <appender-ref ref="DA_FILE"/>-->
     </logger>
