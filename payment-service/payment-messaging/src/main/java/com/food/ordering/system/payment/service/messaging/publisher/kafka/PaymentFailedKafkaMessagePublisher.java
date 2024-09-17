@@ -25,7 +25,7 @@ public class PaymentFailedKafkaMessagePublisher implements IPaymentFailedMessage
     @Override
     public void publish(PaymentFailedEvent paymentFailedEvent) {
         String orderId = paymentFailedEvent.getPayment().getId().getValue();
-        log.info("Received PaymentFailedEvent for orderId: {}", orderId);
+        log.info("Received PaymentFailedEvent for orderId: [{}]", orderId);
 
         try {
             CompletableFuture<SendResult<String, PaymentResponseAvroModel>> callbackFuture = new CompletableFuture<>();
@@ -38,9 +38,9 @@ public class PaymentFailedKafkaMessagePublisher implements IPaymentFailedMessage
                     callbackFuture
             );
 
-            log.info("PaymentFailedEvent sent to Kafka for orderId: {}", orderId);
+            log.info("PaymentFailedEvent sent to Kafka for orderId: [{}]", orderId);
         } catch (Exception e) {
-            log.error("Error while sending PaymentFailedEvent to Kafka for orderId: {}", orderId, e);
+            log.error("Error while sending PaymentFailedEvent to Kafka for orderId: [{}]", orderId, e);
         }
     }
 }

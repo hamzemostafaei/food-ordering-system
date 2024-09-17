@@ -75,7 +75,7 @@ public class Order extends ABaseAggregateRoot<OrderId> {
     }
 
     private void updateFailureMessages(List<String> failureMessages) {
-        if (this.failureMessages != null && failureMessages != null) {
+        if (this.failureMessages != null && !this.failureMessages.isEmpty() && failureMessages != null) {
             this.failureMessages.addAll(
                     failureMessages
                             .stream()
@@ -84,7 +84,7 @@ public class Order extends ABaseAggregateRoot<OrderId> {
             );
         }
 
-        if (this.failureMessages == null) {
+        if (this.failureMessages == null || this.failureMessages.isEmpty()) {
             this.failureMessages = failureMessages;
         }
 
@@ -128,7 +128,6 @@ public class Order extends ABaseAggregateRoot<OrderId> {
             );
         }
     }
-
 
     private void validateTotalPrice() {
         if (price == null || !price.isGreaterThanZero()) {

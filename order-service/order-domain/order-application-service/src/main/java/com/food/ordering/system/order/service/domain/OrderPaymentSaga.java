@@ -35,7 +35,7 @@ public class OrderPaymentSaga implements ISagaStep<PaymentResponse, OrderPaidEve
     @Override
     @Transactional
     public EmptyEvent rollback(PaymentResponse paymentResponse) {
-        log.info("Cancelling order with id [{}]", paymentResponse.getOrderId());
+        log.info("Cancelling order with id: [{}]", paymentResponse.getOrderId());
         Order order = orderSagaHelper.findOrder(paymentResponse.getOrderId());
         orderDomainService.cancelOrder(order, paymentResponse.getFailureMessages());
         orderSagaHelper.saveOrder(order);
