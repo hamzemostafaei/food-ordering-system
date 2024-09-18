@@ -33,7 +33,7 @@ public class OrderEntity {
     @Column(precision = 22, scale = 2)
     private BigDecimal price;
 
-    @Column(length = 64)
+    @Column(length = 1)
     private OrderStatus orderStatus;
 
     @Column(length = 256)

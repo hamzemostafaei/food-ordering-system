@@ -72,7 +72,7 @@ public class OrderPaymentSaga implements ISagaStep<PaymentResponse> {
                 paymentResponse.getSagaId()
         );
 
-        log.info("Order with id: {} is paid", domainEvent.getOrder().getId().getValue());
+        log.info("Order with id: [{}] is paid", domainEvent.getOrder().getId().getValue());
     }
 
     @Override
@@ -85,7 +85,7 @@ public class OrderPaymentSaga implements ISagaStep<PaymentResponse> {
                         getCurrentSagaStatus(paymentResponse.getPaymentStatus()));
 
         if (orderPaymentOutboxMessageResponse.isEmpty()) {
-            log.info("An outbox message with saga id: {} is already roll backed!", paymentResponse.getSagaId());
+            log.info("An outbox message with saga id: [{}] is already roll backed!", paymentResponse.getSagaId());
             return;
         }
 
@@ -99,8 +99,13 @@ public class OrderPaymentSaga implements ISagaStep<PaymentResponse> {
                 order.getOrderStatus(), sagaStatus));
 
         if (paymentResponse.getPaymentStatus() == PaymentStatus.Cancelled) {
-            approvalOutboxHelper.save(getUpdatedApprovalOutboxMessage(paymentResponse.getSagaId(),
-                    order.getOrderStatus(), sagaStatus));
+            approvalOutboxHelper.save(
+                    getUpdatedApprovalOutboxMessage(
+                            paymentResponse.getSagaId(),
+                            order.getOrderStatus(),
+                            sagaStatus
+                    )
+            );
         }
 
         log.info("Order with id: [{}] is cancelled", order.getId().getValue());
