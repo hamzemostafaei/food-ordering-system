@@ -11,17 +11,13 @@ import java.util.List;
 
 public interface IOrderDomainService {
 
-    OrderCreatedEvent validateAndInitiateOrder(Order order,
-                                               Restaurant restaurant,
-                                               IDomainEventPublisher<OrderCreatedEvent> orderCreatedEventPublisher);
+    OrderCreatedEvent validateAndInitiateOrder(Order order,Restaurant restaurant);
 
-    OrderPaidEvent payOrder(Order order,IDomainEventPublisher<OrderPaidEvent> orderPaidEventPublisher);
+    OrderPaidEvent payOrder(Order order);
 
     void approveOrder(Order order);
 
-    OrderCancelledEvent cancelOrderPayment(Order order,
-                                           List<String> failureMessages,
-                                           IDomainEventPublisher<OrderCancelledEvent> orderCancelledEventPublisher);
+    OrderCancelledEvent cancelOrderPayment(Order order,List<String> failureMessages);
 
     void cancelOrder(Order order, List<String> failureMessages);
 }

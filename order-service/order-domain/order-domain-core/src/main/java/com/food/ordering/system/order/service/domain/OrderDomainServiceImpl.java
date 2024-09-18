@@ -21,20 +21,19 @@ public class OrderDomainServiceImpl implements IOrderDomainService {
 
     @Override
     public OrderCreatedEvent validateAndInitiateOrder(Order order,
-                                                      Restaurant restaurant,
-                                                      IDomainEventPublisher<OrderCreatedEvent> orderCreatedEventPublisher) {
+                                                      Restaurant restaurant) {
         validateRestaurant(restaurant);
         setProductOrderInformation(order, restaurant);
         order.validateOrder();
         order.initializeOrder();
-        return new OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of(UTC)), orderCreatedEventPublisher);
+        return new OrderCreatedEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
     }
 
     @Override
-    public OrderPaidEvent payOrder(Order order, IDomainEventPublisher<OrderPaidEvent> orderPaidEventPublisher) {
+    public OrderPaidEvent payOrder(Order order) {
         order.pay();
         log.info("Order with id: [{}] is paid", order.getId().getValue());
-        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC)), orderPaidEventPublisher);
+        return new OrderPaidEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
     }
 
     @Override
@@ -45,10 +44,9 @@ public class OrderDomainServiceImpl implements IOrderDomainService {
 
     @Override
     public OrderCancelledEvent cancelOrderPayment(Order order,
-                                                  List<String> failureMessages,
-                                                  IDomainEventPublisher<OrderCancelledEvent> orderCancelledEventPublisher) {
+                                                  List<String> failureMessages) {
         order.initCancel(failureMessages);
-        return new OrderCancelledEvent(order, ZonedDateTime.now(ZoneId.of(UTC)), orderCancelledEventPublisher);
+        return new OrderCancelledEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
     }
 
     @Override

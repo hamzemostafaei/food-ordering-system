@@ -7,19 +7,11 @@ import java.time.ZonedDateTime;
 
 public class OrderCreatedEvent extends ABaseOrderEvent {
 
-    private final IDomainEventPublisher<OrderCreatedEvent> orderCreatedEventPublisher;
 
     public OrderCreatedEvent(Order order,
-                             ZonedDateTime createdAt,
-                             IDomainEventPublisher<OrderCreatedEvent> orderCreatedEventPublisher) {
+                             ZonedDateTime createdAt) {
 
         super(order, createdAt);
-        this.orderCreatedEventPublisher = orderCreatedEventPublisher;
-    }
-
-    @Override
-    public void fire() {
-        orderCreatedEventPublisher.publish(this);
     }
 }
 
