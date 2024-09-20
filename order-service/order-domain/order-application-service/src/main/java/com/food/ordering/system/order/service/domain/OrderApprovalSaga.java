@@ -82,8 +82,13 @@ public class OrderApprovalSaga implements ISagaStep<RestaurantApprovalResponse> 
 
         SagaStatus sagaStatus = orderSagaHelper.orderStatusToSagaStatus(domainEvent.getOrder().getOrderStatus());
 
-        approvalOutboxHelper.save(getUpdatedApprovalOutboxMessage(orderApprovalOutboxMessage,
-                domainEvent.getOrder().getOrderStatus(), sagaStatus));
+        approvalOutboxHelper.save(
+                getUpdatedApprovalOutboxMessage(
+                        orderApprovalOutboxMessage,
+                        domainEvent.getOrder().getOrderStatus(),
+                        sagaStatus
+                )
+        );
 
         paymentOutboxHelper.savePaymentOutboxMessage(
                 orderDataMapper.orderCancelledEventToOrderPaymentEventPayload(domainEvent),
