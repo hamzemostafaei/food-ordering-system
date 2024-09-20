@@ -31,10 +31,14 @@ public class OrderOutboxHelper {
     private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
-    public Optional<OrderOutboxMessage> getCompletedOrderOutboxMessageBySagaIdAndPaymentStatus(String sagaId,
-                                                                                               PaymentStatus paymentStatus) {
-        return orderOutboxRepository.findByTypeAndSagaIdAndPaymentStatusAndOutboxStatus(ORDER_SAGA_NAME, sagaId,
-                paymentStatus, OutboxStatus.Completed);
+    public Optional<OrderOutboxMessage> getCompletedOrderOutboxMessageBySagaIdAndPaymentStatus(String sagaId, PaymentStatus paymentStatus) {
+
+        return orderOutboxRepository.findByTypeAndSagaIdAndPaymentStatusAndOutboxStatus(
+                ORDER_SAGA_NAME,
+                sagaId,
+                paymentStatus,
+                OutboxStatus.Completed
+        );
     }
 
     @Transactional(readOnly = true)
@@ -52,16 +56,18 @@ public class OrderOutboxHelper {
                                        PaymentStatus paymentStatus,
                                        OutboxStatus outboxStatus,
                                        String sagaId) {
-        save(OrderOutboxMessage.builder()
-                .id(UUID.randomUUID().toString())
-                .sagaId(sagaId)
-                .createdAt(orderEventPayload.getCreatedAt())
-                .processedAt(ZonedDateTime.now(ZoneId.of(UTC)))
-                .type(ORDER_SAGA_NAME)
-                .payload(createPayload(orderEventPayload))
-                .paymentStatus(paymentStatus)
-                .outboxStatus(outboxStatus)
-                .build());
+        save(
+                OrderOutboxMessage.builder()
+                        .id(UUID.randomUUID().toString())
+                        .sagaId(sagaId)
+                        .createdAt(orderEventPayload.getCreatedAt())
+                        .processedAt(ZonedDateTime.now(ZoneId.of(UTC)))
+                        .type(ORDER_SAGA_NAME)
+                        .payload(createPayload(orderEventPayload))
+                        .paymentStatus(paymentStatus)
+                        .outboxStatus(outboxStatus)
+                        .build()
+        );
     }
 
     @Transactional

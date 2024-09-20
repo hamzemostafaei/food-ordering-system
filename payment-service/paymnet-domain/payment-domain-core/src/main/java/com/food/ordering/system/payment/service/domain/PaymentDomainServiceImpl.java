@@ -1,6 +1,5 @@
 package com.food.ordering.system.payment.service.domain;
 
-import com.food.ordering.system.domain.event.publisher.IDomainEventPublisher;
 import com.food.ordering.system.domain.value.object.Money;
 import com.food.ordering.system.domain.value.object.PaymentStatus;
 import com.food.ordering.system.payment.service.domain.entity.CreditEntry;
@@ -28,9 +27,7 @@ public class PaymentDomainServiceImpl implements IPaymentDomainService {
     public PaymentEvent validateAndInitiatePayment(Payment payment,
                                                    CreditEntry creditEntry,
                                                    List<CreditHistory> creditHistories,
-                                                   List<String> failureMessages,
-                                                   IDomainEventPublisher<PaymentCompletedEvent> paymentCompletedEventPublisher,
-                                                   IDomainEventPublisher<PaymentFailedEvent> paymentFailedEventPublisher) {
+                                                   List<String> failureMessages) {
         payment.validatePayment(failureMessages);
         payment.initializePayment();
         validateCreditEntry(payment, creditEntry, failureMessages);
@@ -41,11 +38,11 @@ public class PaymentDomainServiceImpl implements IPaymentDomainService {
         if (failureMessages.isEmpty()) {
             log.info("Payment is initiated for order id: [{}]", payment.getOrderId().getValue());
             payment.updateStatus(PaymentStatus.Completed);
-            return new PaymentCompletedEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)), paymentCompletedEventPublisher);
+            return new PaymentCompletedEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)));
         } else {
             log.info("Payment initiation is failed for order id: [{}]", payment.getOrderId().getValue());
             payment.updateStatus(PaymentStatus.Failed);
-            return new PaymentFailedEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)), failureMessages, paymentFailedEventPublisher);
+            return new PaymentFailedEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)), failureMessages);
         }
     }
 
@@ -53,9 +50,7 @@ public class PaymentDomainServiceImpl implements IPaymentDomainService {
     public PaymentEvent validateAndCancelPayment(Payment payment,
                                                  CreditEntry creditEntry,
                                                  List<CreditHistory> creditHistories,
-                                                 List<String> failureMessages,
-                                                 IDomainEventPublisher<PaymentCancelledEvent> paymentCancelledEventPublisher,
-                                                 IDomainEventPublisher<PaymentFailedEvent> paymentFailedEventPublisher) {
+                                                 List<String> failureMessages) {
         payment.validatePayment(failureMessages);
         addCreditEntry(payment, creditEntry);
         updateCreditHistory(payment, creditHistories, TransactionType.Credit);
@@ -63,18 +58,20 @@ public class PaymentDomainServiceImpl implements IPaymentDomainService {
         if (failureMessages.isEmpty()) {
             log.info("Payment is cancelled for order id: [{}]", payment.getOrderId().getValue());
             payment.updateStatus(PaymentStatus.Cancelled);
-            return new PaymentCancelledEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)), paymentCancelledEventPublisher);
+            return new PaymentCancelledEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)));
         } else {
             log.info("Payment cancellation is failed for order id: [{}]", payment.getOrderId().getValue());
             payment.updateStatus(PaymentStatus.Failed);
-            return new PaymentFailedEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)), failureMessages, paymentFailedEventPublisher);
+            return new PaymentFailedEvent(payment, ZonedDateTime.now(ZoneId.of(UTC)), failureMessages);
         }
     }
 
     private void validateCreditEntry(Payment payment, CreditEntry creditEntry, List<String> failureMessages) {
         if (payment.getPrice().isGreaterThan(creditEntry.getTotalCreditAmount())) {
-            log.error("Customer with id: [{}] doesn't have enough credit for payment!", payment.getCustomerId().getValue());
-            failureMessages.add(String.format("Customer with id: [%s] doesn't have enough credit for payment!", payment.getCustomerId().getValue()));
+            log.error("Customer with id: [{}] doesn't have enough credit for payment!",
+                    payment.getCustomerId().getValue());
+            failureMessages.add("Customer with id=" + payment.getCustomerId().getValue()
+                    + " doesn't have enough credit for payment!");
         }
     }
 
@@ -93,6 +90,7 @@ public class PaymentDomainServiceImpl implements IPaymentDomainService {
                 .build());
     }
 
+
     private void validateCreditHistory(CreditEntry creditEntry,
                                        List<CreditHistory> creditHistories,
                                        List<String> failureMessages) {
@@ -102,12 +100,15 @@ public class PaymentDomainServiceImpl implements IPaymentDomainService {
         if (totalDebitHistory.isGreaterThan(totalCreditHistory)) {
             log.error("Customer with id: [{}] doesn't have enough credit according to credit history",
                     creditEntry.getCustomerId().getValue());
-            failureMessages.add(String.format("Customer with id: [%s] doesn't have enough credit according to credit history!", creditEntry.getCustomerId().getValue()));
+            failureMessages.add("Customer with id=" + creditEntry.getCustomerId().getValue() +
+                    " doesn't have enough credit according to credit history!");
         }
 
         if (!creditEntry.getTotalCreditAmount().equals(totalCreditHistory.subtract(totalDebitHistory))) {
-            log.error("Credit history total is not equal to current credit for customer id: [{}]!", creditEntry.getCustomerId().getValue());
-            failureMessages.add(String.format("Credit history total is not equal to current credit for customer id: [%s]!", creditEntry.getCustomerId().getValue()));
+            log.error("Credit history total is not equal to current credit for customer id: [{}]!",
+                    creditEntry.getCustomerId().getValue());
+            failureMessages.add("Credit history total is not equal to current credit for customer id: " +
+                    creditEntry.getCustomerId().getValue() + "!");
         }
     }
 
