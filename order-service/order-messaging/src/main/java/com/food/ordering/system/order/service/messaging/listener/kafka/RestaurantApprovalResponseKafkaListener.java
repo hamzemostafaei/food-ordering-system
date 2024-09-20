@@ -31,32 +31,31 @@ public class RestaurantApprovalResponseKafkaListener implements IKafkaConsumer<R
 
         log.info("{} number of restaurant approval responses received", messages.size());
 
-        messages
-                .forEach(message -> {
-                    String key = message.key();
-                    int partition = message.partition();
-                    long offset = message.offset();
+        messages.forEach(message -> {
+            String key = message.key();
+            int partition = message.partition();
+            long offset = message.offset();
 
-                    log.info("Processing message with key: {}, partition: {}, offset: {}", key, partition, offset);
+            log.info("Processing message with key: [{}], partition: [{}], offset: [{}]", key, partition, offset);
 
-                    RestaurantApprovalResponseAvroModel restaurantApprovalResponseAvroModel = message.value();
-                    try {
-                        if (OrderApprovalStatus.APPROVED == restaurantApprovalResponseAvroModel.getOrderApprovalStatus()) {
-                            log.info("Processing approved order for order id: {}", restaurantApprovalResponseAvroModel.getOrderId());
-                            restaurantApprovalResponseMessageListener.orderApproved(orderMessagingDataMapper.approvalResponseAvroModelToApprovalResponse(restaurantApprovalResponseAvroModel));
-                        } else if (OrderApprovalStatus.REJECTED == restaurantApprovalResponseAvroModel.getOrderApprovalStatus()) {
-                            log.info("Processing rejected order for order id: {}, with failure messages: {}", restaurantApprovalResponseAvroModel.getOrderId(), String.join(FAILURE_MESSAGE_DELIMITER, restaurantApprovalResponseAvroModel.getFailureMessages()));
-                            restaurantApprovalResponseMessageListener.orderRejected(orderMessagingDataMapper.approvalResponseAvroModelToApprovalResponse(restaurantApprovalResponseAvroModel));
-                        }
-                    } catch (OptimisticLockingFailureException e) {
-                        //NO-OP for optimistic lock. This means another thread finished the work, do not throw error to prevent reading the data from kafka again!
-                        log.error("Caught optimistic locking exception in RestaurantApprovalResponseKafkaListener for order id: {}",
-                                restaurantApprovalResponseAvroModel.getOrderId());
-                    } catch (OrderNotFoundException e) {
-                        //NO-OP for OrderNotFoundException
-                        log.error("No order found for order id: {}", restaurantApprovalResponseAvroModel.getOrderId());
-                    }
-                });
+            RestaurantApprovalResponseAvroModel restaurantApprovalResponseAvroModel = message.value();
+            try {
+                if (OrderApprovalStatus.APPROVED == restaurantApprovalResponseAvroModel.getOrderApprovalStatus()) {
+                    log.info("Processing approved order for order id: [{}]", restaurantApprovalResponseAvroModel.getOrderId());
+                    restaurantApprovalResponseMessageListener.orderApproved(orderMessagingDataMapper.approvalResponseAvroModelToApprovalResponse(restaurantApprovalResponseAvroModel));
+                } else if (OrderApprovalStatus.REJECTED == restaurantApprovalResponseAvroModel.getOrderApprovalStatus()) {
+                    log.info("Processing rejected order for order id: [{}], with failure messages: [{}]", restaurantApprovalResponseAvroModel.getOrderId(), String.join(FAILURE_MESSAGE_DELIMITER, restaurantApprovalResponseAvroModel.getFailureMessages()));
+                    restaurantApprovalResponseMessageListener.orderRejected(orderMessagingDataMapper.approvalResponseAvroModelToApprovalResponse(restaurantApprovalResponseAvroModel));
+                }
+            } catch (OptimisticLockingFailureException e) {
+                //NO-OP for optimistic lock. This means another thread finished the work, do not throw error to prevent reading the data from kafka again!
+                log.error("Caught optimistic locking exception in RestaurantApprovalResponseKafkaListener for order id: [{}]",
+                        restaurantApprovalResponseAvroModel.getOrderId());
+            } catch (OrderNotFoundException e) {
+                //NO-OP for OrderNotFoundException
+                log.error("No order found for order id: [{}]", restaurantApprovalResponseAvroModel.getOrderId());
+            }
+        });
 
     }
 }
