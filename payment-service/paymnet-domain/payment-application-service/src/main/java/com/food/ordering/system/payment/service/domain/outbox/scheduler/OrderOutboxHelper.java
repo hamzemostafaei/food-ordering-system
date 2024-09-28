@@ -74,7 +74,7 @@ public class OrderOutboxHelper {
     public void updateOutboxMessage(OrderOutboxMessage orderOutboxMessage, OutboxStatus outboxStatus) {
         orderOutboxMessage.setOutboxStatus(outboxStatus);
         save(orderOutboxMessage);
-        log.info("Order outbox table status is updated as: {}", outboxStatus.name());
+        log.info("Order outbox table status is updated as: [{}]", outboxStatus.name());
     }
 
     private String createPayload(OrderEventPayload orderEventPayload) {
