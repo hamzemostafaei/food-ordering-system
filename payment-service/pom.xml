@@ -12,8 +12,8 @@
     <artifactId>payment-service</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>paymnet-domain</module>
-        <module>paymnet-container</module>
+        <module>payment-domain</module>
+        <module>payment-container</module>
         <module>payment-data-access</module>
         <module>payment-messaging</module>
     </modules>

@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>paymnet-container</artifactId>
+    <artifactId>payment-container</artifactId>
 
     <dependencies>
         <dependency>

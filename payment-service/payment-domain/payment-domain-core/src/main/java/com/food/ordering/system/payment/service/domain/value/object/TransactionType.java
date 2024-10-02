@@ -7,8 +7,7 @@ import java.util.Map;
 
 public enum TransactionType {
     Debit(0, "DEBIT"),
-    Credit(1, "CREDIT"),
-    ;
+    Credit(1, "CREDIT");
 
     private static final Map<Integer, TransactionType> VALUE_MAP = new HashMap<>();
     private static final Map<String, TransactionType> VALUE_NAME_MAP = new HashMap<>();
