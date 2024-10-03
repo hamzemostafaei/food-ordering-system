@@ -37,7 +37,7 @@ public class PaymentOutboxScheduler implements IOutboxScheduler {
 
         if (outboxMessagesResponse.isPresent() && !outboxMessagesResponse.get().isEmpty()) {
             List<OrderPaymentOutboxMessage> outboxMessages = outboxMessagesResponse.get();
-            log.info("Received {} OrderPaymentOutboxMessage with ids: {}, sending to message bus!",
+            log.info("Received [{}] OrderPaymentOutboxMessage with ids: [{}], sending to message bus!",
                     outboxMessages.size(),
                     outboxMessages.stream()
                             .map(OrderPaymentOutboxMessage::getId)
@@ -46,7 +46,7 @@ public class PaymentOutboxScheduler implements IOutboxScheduler {
             outboxMessages.forEach(
                     outboxMessage -> paymentRequestMessagePublisher.publish(outboxMessage, this::updateOutboxStatus)
             );
-            log.info("{} OrderPaymentOutboxMessage sent to message bus!", outboxMessages.size());
+            log.info("[{}] OrderPaymentOutboxMessage sent to message bus!", outboxMessages.size());
         }
 
     }

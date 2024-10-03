@@ -11,10 +11,8 @@ import com.food.ordering.system.restaurant.service.domain.ports.output.message.p
 import com.food.ordering.system.restaurant.service.messaging.mapper.RestaurantMessagingDataMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 @Slf4j
@@ -40,13 +38,19 @@ public class RestaurantApprovalEventKafkaPublisher implements IRestaurantApprova
             RestaurantApprovalResponseAvroModel restaurantApprovalResponseAvroModel =
                     restaurantMessagingDataMapper.orderEventPayloadToRestaurantApprovalResponseAvroModel(sagaId, orderEventPayload);
 
-            CompletableFuture<SendResult<String, RestaurantApprovalResponseAvroModel>> callbackFuture = new CompletableFuture<>();
-
             kafkaProducer.send(
                     restaurantServiceConfigData.getRestaurantApprovalResponseTopicName(),
                     sagaId,
                     restaurantApprovalResponseAvroModel,
-                    callbackFuture
+                    kafkaMessageHelper.getKafkaCallback(
+                            restaurantServiceConfigData
+                                    .getRestaurantApprovalResponseTopicName(),
+                            restaurantApprovalResponseAvroModel,
+                            orderOutboxMessage,
+                            outboxCallback,
+                            orderEventPayload.getOrderId(),
+                            "RestaurantApprovalResponseAvroModel"
+                    )
             );
 
             log.info("RestaurantApprovalResponseAvroModel sent to kafka for order id: {} and saga id: {}",

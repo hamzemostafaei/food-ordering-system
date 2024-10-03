@@ -11,10 +11,8 @@ import com.food.ordering.system.order.service.messaging.mapper.OrderMessagingDat
 import com.food.ordering.system.outbox.OutboxStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 @Slf4j
@@ -28,8 +26,7 @@ public class OrderPaymentEventKafkaPublisher implements IPaymentRequestMessagePu
     private final KafkaMessageHelper kafkaMessageHelper;
 
     @Override
-    public void publish(OrderPaymentOutboxMessage orderPaymentOutboxMessage,
-                        BiConsumer<OrderPaymentOutboxMessage, OutboxStatus> outboxCallback) {
+    public void publish(OrderPaymentOutboxMessage orderPaymentOutboxMessage, BiConsumer<OrderPaymentOutboxMessage, OutboxStatus> outboxCallback) {
 
         OrderPaymentEventPayload orderPaymentEventPayload = kafkaMessageHelper.getOrderEventPayload(
                 orderPaymentOutboxMessage.getPayload(),
@@ -43,7 +40,6 @@ public class OrderPaymentEventKafkaPublisher implements IPaymentRequestMessagePu
                 sagaId);
 
         try {
-            CompletableFuture<SendResult<String, PaymentRequestAvroModel>> callbackFuture = new CompletableFuture<>();
 
             PaymentRequestAvroModel paymentRequestAvroModel =
                     orderMessagingDataMapper.orderPaymentEventToPaymentRequestAvroModel(sagaId, orderPaymentEventPayload);
@@ -52,12 +48,19 @@ public class OrderPaymentEventKafkaPublisher implements IPaymentRequestMessagePu
                     orderServiceConfigData.getPaymentRequestTopicName(),
                     sagaId,
                     paymentRequestAvroModel,
-                    callbackFuture
+                    kafkaMessageHelper.getKafkaCallback(
+                            orderServiceConfigData.getPaymentRequestTopicName(),
+                            paymentRequestAvroModel,
+                            orderPaymentOutboxMessage,
+                            outboxCallback,
+                            orderPaymentEventPayload.getOrderId(),
+                            "PaymentRequestAvroModel"
+                    )
             );
 
             log.info("OrderPaymentEventPayload sent to Kafka for order id: [{}] and saga id: [{}]", orderPaymentEventPayload.getOrderId(), sagaId);
         } catch (Exception e) {
-            log.error("Error while sending OrderPaymentEventPayload to kafka with order id: {} and saga id: {}, error: {}",
+            log.error("Error while sending OrderPaymentEventPayload to kafka with order id: [{}] and saga id: [{}], error: [{}]",
                     orderPaymentEventPayload.getOrderId(),
                     sagaId,
                     e.getMessage()

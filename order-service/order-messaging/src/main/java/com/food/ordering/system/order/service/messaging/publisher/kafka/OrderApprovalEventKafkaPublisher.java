@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 @Slf4j
@@ -49,7 +48,14 @@ public class OrderApprovalEventKafkaPublisher implements IRestaurantApprovalRequ
                     orderServiceConfigData.getRestaurantApprovalRequestTopicName(),
                     sagaId,
                     restaurantApprovalRequestAvroModel,
-                    new CompletableFuture<>()
+                    kafkaMessageHelper.getKafkaCallback(
+                            orderServiceConfigData.getRestaurantApprovalRequestTopicName(),
+                            restaurantApprovalRequestAvroModel,
+                            orderApprovalOutboxMessage,
+                            outboxCallback,
+                            orderApprovalEventPayload.getOrderId(),
+                            "RestaurantApprovalRequestAvroModel"
+                    )
             );
 
             log.info("OrderApprovalEventPayload sent to kafka for order id: [{}] and saga id: [{}]", restaurantApprovalRequestAvroModel.getOrderId(), sagaId);

@@ -11,10 +11,8 @@ import com.food.ordering.system.payment.service.domain.ports.output.message.publ
 import com.food.ordering.system.payment.service.messaging.mapper.PaymentMessagingDataMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 @Slf4j
@@ -41,8 +39,6 @@ public class PaymentEventKafkaPublisher implements IPaymentResponseMessagePublis
 
         try {
 
-            CompletableFuture<SendResult<String, PaymentResponseAvroModel>> callbackFuture = new CompletableFuture<>();
-
             PaymentResponseAvroModel paymentResponseAvroModel = paymentMessagingDataMapper
                     .orderEventPayloadToPaymentResponseAvroModel(sagaId, orderEventPayload);
 
@@ -50,7 +46,14 @@ public class PaymentEventKafkaPublisher implements IPaymentResponseMessagePublis
                     paymentServiceConfigData.getPaymentResponseTopicName(),
                     sagaId,
                     paymentResponseAvroModel,
-                    callbackFuture
+                    kafkaMessageHelper.getKafkaCallback(
+                            paymentServiceConfigData.getPaymentResponseTopicName(),
+                            paymentResponseAvroModel,
+                            orderOutboxMessage,
+                            outboxCallback,
+                            orderEventPayload.getOrderId(),
+                            "PaymentResponseAvroModel"
+                    )
             );
 
             log.info("PaymentResponseAvroModel sent to kafka for order id: [{}] and saga id: [{}]",
