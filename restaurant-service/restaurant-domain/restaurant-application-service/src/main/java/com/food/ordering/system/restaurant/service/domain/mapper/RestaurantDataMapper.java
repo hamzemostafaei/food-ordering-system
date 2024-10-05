@@ -17,8 +17,7 @@ import java.util.stream.Collectors;
 @Component
 public class RestaurantDataMapper {
 
-    public Restaurant restaurantApprovalRequestToRestaurant(RestaurantApprovalRequest
-                                                                    restaurantApprovalRequest) {
+    public Restaurant restaurantApprovalRequestToRestaurant(RestaurantApprovalRequest restaurantApprovalRequest) {
         return Restaurant.builder()
                 .restaurantId(new RestaurantId(restaurantApprovalRequest.getRestaurantId()))
                 .orderDetail(OrderDetail.builder()
@@ -35,12 +34,11 @@ public class RestaurantDataMapper {
                 .build();
     }
 
-    public OrderEventPayload
-    orderApprovalEventToOrderEventPayload(ABaseOrderApprovalEvent orderApprovalEvent) {
+    public OrderEventPayload orderApprovalEventToOrderEventPayload(ABaseOrderApprovalEvent orderApprovalEvent) {
         return OrderEventPayload.builder()
                 .orderId(orderApprovalEvent.getOrderApproval().getOrderId().getValue())
                 .restaurantId(orderApprovalEvent.getRestaurantId().getValue())
-                .orderApprovalStatus(orderApprovalEvent.getOrderApproval().getApprovalStatus().name())
+                .orderApprovalStatus(orderApprovalEvent.getOrderApproval().getApprovalStatus().getName())
                 .createdAt(orderApprovalEvent.getCreatedAt())
                 .failureMessages(orderApprovalEvent.getFailureMessages())
                 .build();

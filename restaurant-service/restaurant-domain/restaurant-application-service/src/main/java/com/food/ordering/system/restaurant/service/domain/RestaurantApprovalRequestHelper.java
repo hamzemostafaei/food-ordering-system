@@ -37,12 +37,12 @@ public class RestaurantApprovalRequestHelper {
     public void persistOrderApproval(RestaurantApprovalRequest restaurantApprovalRequest) {
 
         if (publishIfOutboxMessageProcessed(restaurantApprovalRequest)) {
-            log.info("An outbox message with saga id: {} already saved to database!",
+            log.info("An outbox message with saga id: [{}] already saved to database!",
                     restaurantApprovalRequest.getSagaId());
             return;
         }
 
-        log.info("Processing restaurant approval for order id: {}", restaurantApprovalRequest.getOrderId());
+        log.info("Processing restaurant approval for order id: [{}]", restaurantApprovalRequest.getOrderId());
         List<String> failureMessages = new ArrayList<>();
         Restaurant restaurant = findRestaurant(restaurantApprovalRequest);
         ABaseOrderApprovalEvent orderApprovalEvent =
@@ -52,10 +52,12 @@ public class RestaurantApprovalRequestHelper {
         orderApprovalRepository.save(restaurant.getOrderApproval());
 
         orderOutboxHelper
-                .saveOrderOutboxMessage(restaurantDataMapper.orderApprovalEventToOrderEventPayload(orderApprovalEvent),
+                .saveOrderOutboxMessage(
+                        restaurantDataMapper.orderApprovalEventToOrderEventPayload(orderApprovalEvent),
                         orderApprovalEvent.getOrderApproval().getApprovalStatus(),
                         OutboxStatus.Started,
-                        restaurantApprovalRequest.getSagaId());
+                        restaurantApprovalRequest.getSagaId()
+                );
     }
 
     private Restaurant findRestaurant(RestaurantApprovalRequest restaurantApprovalRequest) {
@@ -63,7 +65,7 @@ public class RestaurantApprovalRequestHelper {
 
         Optional<Restaurant> restaurantResult = restaurantRepository.findRestaurantInformation(restaurant);
         if (restaurantResult.isEmpty()) {
-            log.error("Restaurant with id {} not found!", restaurant.getId().getValue());
+            log.error("Restaurant with id [{}] not found!", restaurant.getId().getValue());
             throw new RestaurantNotFoundException("Restaurant with id " + restaurant.getId().getValue() +
                     " not found!");
         }

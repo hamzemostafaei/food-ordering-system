@@ -59,7 +59,7 @@ public class OrderApprovalSaga implements ISagaStep<RestaurantApprovalResponse> 
         paymentOutboxHelper.save(getUpdatedPaymentOutboxMessage(restaurantApprovalResponse.getSagaId(),
                 order.getOrderStatus(), sagaStatus));
 
-        log.info("Order with id: {} is approved", order.getId().getValue());
+        log.info("Order with id: [{}] is approved", order.getId().getValue());
     }
 
     @Override

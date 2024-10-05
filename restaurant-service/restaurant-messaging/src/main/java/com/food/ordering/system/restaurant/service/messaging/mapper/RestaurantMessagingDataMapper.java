@@ -16,16 +16,13 @@ import java.util.stream.Collectors;
 @Component
 public class RestaurantMessagingDataMapper {
 
-    public RestaurantApprovalRequest
-    restaurantApprovalRequestAvroModelToRestaurantApproval(RestaurantApprovalRequestAvroModel
-                                                                   restaurantApprovalRequestAvroModel) {
+    public RestaurantApprovalRequest restaurantApprovalRequestAvroModelToRestaurantApproval(RestaurantApprovalRequestAvroModel restaurantApprovalRequestAvroModel) {
         return RestaurantApprovalRequest.builder()
                 .id(restaurantApprovalRequestAvroModel.getId())
                 .sagaId(restaurantApprovalRequestAvroModel.getSagaId())
                 .restaurantId(restaurantApprovalRequestAvroModel.getRestaurantId())
                 .orderId(restaurantApprovalRequestAvroModel.getOrderId())
-                .restaurantOrderStatus(RestaurantOrderStatus.valueOf(restaurantApprovalRequestAvroModel
-                        .getRestaurantOrderStatus().name()))
+                .restaurantOrderStatus(RestaurantOrderStatus.getByName(restaurantApprovalRequestAvroModel.getRestaurantOrderStatus().name()))
                 .products(restaurantApprovalRequestAvroModel.getProducts()
                         .stream().map(avroModel ->
                                 Product.builder()
@@ -38,8 +35,7 @@ public class RestaurantMessagingDataMapper {
                 .build();
     }
 
-    public RestaurantApprovalResponseAvroModel
-    orderEventPayloadToRestaurantApprovalResponseAvroModel(String sagaId, OrderEventPayload orderEventPayload) {
+    public RestaurantApprovalResponseAvroModel orderEventPayloadToRestaurantApprovalResponseAvroModel(String sagaId, OrderEventPayload orderEventPayload) {
         return RestaurantApprovalResponseAvroModel.newBuilder()
                 .setId(UUID.randomUUID().toString())
                 .setSagaId(sagaId)
