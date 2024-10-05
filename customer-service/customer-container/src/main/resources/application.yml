@@ -1,0 +1,47 @@
+server:
+  port: 8184
+
+customer-service:
+  customer-topic-name: customer
+
+spring:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        session.events.log: LOG_QUERIES_SLOWER_THAN_MS:100
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/orclpdb
+    username: fos_customer
+    password: 123456
+    hikari:
+      pool-name: FoodOrderingSystemCustomerPool
+      driver-class-name: oracle.jdbc.OracleDriver
+      minimum-idle: 4
+      maximum-pool-size: 16
+      idle-timeout: 43200000
+      max-lifetime: 86400000
+      connection-test-query: select 1 from dual
+      register-mbeans: false
+      auto-commit: false
+
+kafka-config:
+  bootstrap-servers: localhost:19092, localhost:29092, localhost:39092
+  schema-registry-url-key: schema.registry.url
+  schema-registry-url: http://localhost:8081
+  num-of-partitions: 3
+  replication-factor: 3
+
+kafka-producer-config:
+  key-serializer-class: org.apache.kafka.common.serialization.StringSerializer
+  value-serializer-class: io.confluent.kafka.serializers.KafkaAvroSerializer
+  compression-type: none
+  acks: all
+  batch-size: 16384
+  batch-size-boost-factor: 100
+  linger-ms: 5
+  request-timeout-ms: 60000
+  retry-count: 5
