@@ -39,8 +39,7 @@ public class PaymentEventKafkaPublisher implements IPaymentResponseMessagePublis
 
         try {
 
-            PaymentResponseAvroModel paymentResponseAvroModel = paymentMessagingDataMapper
-                    .orderEventPayloadToPaymentResponseAvroModel(sagaId, orderEventPayload);
+            PaymentResponseAvroModel paymentResponseAvroModel = paymentMessagingDataMapper.orderEventPayloadToPaymentResponseAvroModel(sagaId, orderEventPayload);
 
             kafkaProducer.send(
                     paymentServiceConfigData.getPaymentResponseTopicName(),
