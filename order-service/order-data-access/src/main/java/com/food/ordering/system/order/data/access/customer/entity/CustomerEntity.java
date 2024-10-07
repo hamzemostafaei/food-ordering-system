@@ -11,8 +11,11 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "order_customer_m_view", schema = "fos_customer")
+@Table(name = "customers")
 public class CustomerEntity {
     @Id
     private String id;
+    private String username;
+    private String firstName;
+    private String lastName;
 }
