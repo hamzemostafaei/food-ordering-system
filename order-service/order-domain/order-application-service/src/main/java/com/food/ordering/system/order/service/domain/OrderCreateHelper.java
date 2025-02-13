@@ -58,13 +58,12 @@ public class OrderCreateHelper {
         }
     }
 
-    private Order saveOrder(Order order) {
+    private void saveOrder(Order order) {
         Order result = orderRepository.save(order);
         if (result == null) {
             log.warn("Could not save order {}", order);
             throw new OrderDomainException("Could not save order with id:" + order.getId());
         }
         log.info("Saved order {}", result);
-        return result;
     }
 }
