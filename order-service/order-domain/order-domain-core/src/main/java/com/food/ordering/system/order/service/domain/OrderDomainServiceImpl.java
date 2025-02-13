@@ -19,8 +19,7 @@ import static com.food.ordering.system.domain.DomainConstants.UTC;
 public class OrderDomainServiceImpl implements IOrderDomainService {
 
     @Override
-    public OrderCreatedEvent validateAndInitiateOrder(Order order,
-                                                      Restaurant restaurant) {
+    public OrderCreatedEvent validateAndInitiateOrder(Order order, Restaurant restaurant) {
         validateRestaurant(restaurant);
         setProductOrderInformation(order, restaurant);
         order.validateOrder();
@@ -42,8 +41,7 @@ public class OrderDomainServiceImpl implements IOrderDomainService {
     }
 
     @Override
-    public OrderCancelledEvent cancelOrderPayment(Order order,
-                                                  List<String> failureMessages) {
+    public OrderCancelledEvent cancelOrderPayment(Order order, List<String> failureMessages) {
         order.initCancel(failureMessages);
         return new OrderCancelledEvent(order, ZonedDateTime.now(ZoneId.of(UTC)));
     }
@@ -62,8 +60,7 @@ public class OrderDomainServiceImpl implements IOrderDomainService {
     }
 
     private void setProductOrderInformation(Order order, Restaurant restaurant) {
-        order
-                .getItems()
+        order.getItems()
                 .forEach((orderItem) -> restaurant.getProducts()
                         .forEach((restaurantProduct) -> {
                             Product currentProduct = orderItem.getProduct();
