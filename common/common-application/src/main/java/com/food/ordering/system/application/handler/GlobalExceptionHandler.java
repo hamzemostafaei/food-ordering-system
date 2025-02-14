@@ -20,7 +20,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {Exception.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDTO handleException(Exception exception) {
-        log.error(exception.getMessage(), exception);
+        if (log.isErrorEnabled()) {
+            log.error(exception.getMessage(), exception);
+        }
         return ErrorDTO.builder()
                 .code(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
                 .message("Unexpected error!")
@@ -32,16 +34,20 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDTO handleException(ValidationException validationException) {
         ErrorDTO errorDTO;
-        if (validationException instanceof ConstraintViolationException) {
-            String violations = extractViolationsFromException((ConstraintViolationException) validationException);
-            log.error(violations, validationException);
+        if (validationException instanceof ConstraintViolationException constraintViolationException) {
+            String violations = extractViolationsFromException(constraintViolationException);
+            if (log.isErrorEnabled()) {
+                log.error(violations, validationException);
+            }
             errorDTO = ErrorDTO.builder()
                     .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
                     .message(violations)
                     .build();
         } else {
             String exceptionMessage = validationException.getMessage();
-            log.error(exceptionMessage, validationException);
+            if (log.isErrorEnabled()) {
+                log.error(exceptionMessage, validationException);
+            }
             errorDTO = ErrorDTO.builder()
                     .code(HttpStatus.BAD_REQUEST.getReasonPhrase())
                     .message(exceptionMessage)

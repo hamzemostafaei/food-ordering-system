@@ -15,9 +15,11 @@ import java.util.Objects;
 @Table(name = "order_items")
 @IdClass(OrderItemEntityId.class)
 public class OrderItemEntity {
+
     @Id
     @Column(length = 19)
     private Long id;
+
     @Id
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ORDER_ID")

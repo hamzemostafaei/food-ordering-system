@@ -2,6 +2,7 @@ package com.food.ordering.system.order.data.access.order.entity;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
@@ -9,7 +10,7 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderItemEntityId {
+public class OrderItemEntityId implements Serializable {
 
     private Long id;
     private OrderEntity order;
