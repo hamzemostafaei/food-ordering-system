@@ -35,9 +35,11 @@ public class OrderPaymentEventKafkaPublisher implements IPaymentRequestMessagePu
 
         String sagaId = orderPaymentOutboxMessage.getSagaId();
 
-        log.info("Received OrderPaymentOutboxMessage for order id: [{}] and saga id: [{}]",
-                orderPaymentEventPayload.getOrderId(),
-                sagaId);
+        if (log.isInfoEnabled()) {
+            log.info("Received OrderPaymentOutboxMessage for order id: [{}] and saga id: [{}]",
+                    orderPaymentEventPayload.getOrderId(),
+                    sagaId);
+        }
 
         try {
 
@@ -58,13 +60,17 @@ public class OrderPaymentEventKafkaPublisher implements IPaymentRequestMessagePu
                     )
             );
 
-            log.info("OrderPaymentEventPayload sent to Kafka for order id: [{}] and saga id: [{}]", orderPaymentEventPayload.getOrderId(), sagaId);
+            if (log.isInfoEnabled()) {
+                log.info("OrderPaymentEventPayload sent to Kafka for order id: [{}] and saga id: [{}]", orderPaymentEventPayload.getOrderId(), sagaId);
+            }
         } catch (Exception e) {
-            log.error("Error while sending OrderPaymentEventPayload to kafka with order id: [{}] and saga id: [{}], error: [{}]",
-                    orderPaymentEventPayload.getOrderId(),
-                    sagaId,
-                    e.getMessage()
-            );
+            if (log.isErrorEnabled()) {
+                log.error("Error while sending OrderPaymentEventPayload to kafka with order id: [{}] and saga id: [{}], error: [{}]",
+                        orderPaymentEventPayload.getOrderId(),
+                        sagaId,
+                        e.getMessage()
+                );
+            }
         }
     }
 }
