@@ -37,16 +37,20 @@ public class PaymentOutboxScheduler implements IOutboxScheduler {
 
         if (outboxMessagesResponse.isPresent() && !outboxMessagesResponse.get().isEmpty()) {
             List<OrderPaymentOutboxMessage> outboxMessages = outboxMessagesResponse.get();
-            log.info("Received [{}] OrderPaymentOutboxMessage with ids: [{}], sending to message bus!",
-                    outboxMessages.size(),
-                    outboxMessages.stream()
-                            .map(OrderPaymentOutboxMessage::getId)
-                            .collect(Collectors.joining(","))
-            );
+            if (log.isInfoEnabled()) {
+                log.info("Received [{}] OrderPaymentOutboxMessage with ids: [{}], sending to message bus!",
+                        outboxMessages.size(),
+                        outboxMessages.stream()
+                                .map(OrderPaymentOutboxMessage::getId)
+                                .collect(Collectors.joining(","))
+                );
+            }
             outboxMessages.forEach(
                     outboxMessage -> paymentRequestMessagePublisher.publish(outboxMessage, this::updateOutboxStatus)
             );
-            log.info("[{}] OrderPaymentOutboxMessage sent to message bus!", outboxMessages.size());
+            if (log.isInfoEnabled()) {
+                log.info("[{}] OrderPaymentOutboxMessage sent to message bus!", outboxMessages.size());
+            }
         }
 
     }
@@ -54,6 +58,8 @@ public class PaymentOutboxScheduler implements IOutboxScheduler {
     private void updateOutboxStatus(OrderPaymentOutboxMessage orderPaymentOutboxMessage, OutboxStatus outboxStatus) {
         orderPaymentOutboxMessage.setOutboxStatus(outboxStatus);
         paymentOutboxHelper.save(orderPaymentOutboxMessage);
-        log.info("OrderPaymentOutboxMessage is updated with outbox status: {}", outboxStatus.name());
+        if (log.isInfoEnabled()) {
+            log.info("OrderPaymentOutboxMessage is updated with outbox status: [{}]", outboxStatus.name());
+        }
     }
 }
