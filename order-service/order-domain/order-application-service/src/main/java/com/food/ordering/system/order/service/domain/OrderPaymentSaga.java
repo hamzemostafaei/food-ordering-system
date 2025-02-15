@@ -49,7 +49,9 @@ public class OrderPaymentSaga implements ISagaStep<PaymentResponse> {
         );
 
         if (orderPaymentOutboxMessageResponse.isEmpty()) {
-            log.info("An outbox message with saga id: [{}] is already processed!", paymentResponse.getSagaId());
+            if (log.isInfoEnabled()) {
+                log.info("An outbox message with saga id: [{}] is already processed!", paymentResponse.getSagaId());
+            }
             return;
         }
 
@@ -72,7 +74,9 @@ public class OrderPaymentSaga implements ISagaStep<PaymentResponse> {
                 paymentResponse.getSagaId()
         );
 
-        log.info("Order with id: [{}] is paid", domainEvent.getOrder().getId().getValue());
+        if (log.isInfoEnabled()) {
+            log.info("Order with id: [{}] is paid", domainEvent.getOrder().getId().getValue());
+        }
     }
 
     @Override
@@ -85,7 +89,9 @@ public class OrderPaymentSaga implements ISagaStep<PaymentResponse> {
                         getCurrentSagaStatus(paymentResponse.getPaymentStatus()));
 
         if (orderPaymentOutboxMessageResponse.isEmpty()) {
-            log.info("An outbox message with saga id: [{}] is already roll backed!", paymentResponse.getSagaId());
+            if (log.isInfoEnabled()) {
+                log.info("An outbox message with saga id: [{}] is already roll backed!", paymentResponse.getSagaId());
+            }
             return;
         }
 
@@ -108,13 +114,17 @@ public class OrderPaymentSaga implements ISagaStep<PaymentResponse> {
             );
         }
 
-        log.info("Order with id: [{}] is cancelled", order.getId().getValue());
+        if (log.isInfoEnabled()) {
+            log.info("Order with id: [{}] is cancelled", order.getId().getValue());
+        }
     }
 
     private Order findOrder(String orderId) {
         Optional<Order> orderResponse = orderRepository.findById(new OrderId(orderId));
         if (orderResponse.isEmpty()) {
-            log.error("Order with id: [{}] could not be found!", orderId);
+            if (log.isErrorEnabled()) {
+                log.error("Order with id: [{}] could not be found!", orderId);
+            }
             throw new OrderNotFoundException("Order with id " + orderId + " could not be found!");
         }
         return orderResponse.get();
@@ -130,7 +140,9 @@ public class OrderPaymentSaga implements ISagaStep<PaymentResponse> {
     }
 
     private OrderPaidEvent completePaymentForOrder(PaymentResponse paymentResponse) {
-        log.info("Completing payment for order with id: [{}]", paymentResponse.getOrderId());
+        if (log.isInfoEnabled()) {
+            log.info("Completing payment for order with id: [{}]", paymentResponse.getOrderId());
+        }
         Order order = findOrder(paymentResponse.getOrderId());
         OrderPaidEvent domainEvent = orderDomainService.payOrder(order);
         orderRepository.save(order);
@@ -146,7 +158,9 @@ public class OrderPaymentSaga implements ISagaStep<PaymentResponse> {
     }
 
     private Order rollbackPaymentForOrder(PaymentResponse paymentResponse) {
-        log.info("Cancelling order with id: [{}]", paymentResponse.getOrderId());
+        if (log.isInfoEnabled()) {
+            log.info("Cancelling order with id: [{}]", paymentResponse.getOrderId());
+        }
         Order order = findOrder(paymentResponse.getOrderId());
         orderDomainService.cancelOrder(order, paymentResponse.getFailureMessages());
         orderRepository.save(order);

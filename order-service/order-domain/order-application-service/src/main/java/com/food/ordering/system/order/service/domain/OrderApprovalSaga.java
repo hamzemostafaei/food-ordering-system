@@ -44,7 +44,9 @@ public class OrderApprovalSaga implements ISagaStep<RestaurantApprovalResponse> 
         );
 
         if (orderApprovalOutboxMessageResponse.isEmpty()) {
-            log.info("An outbox message with saga id: [{}] is already processed!", restaurantApprovalResponse.getSagaId());
+            if (log.isInfoEnabled()) {
+                log.info("An outbox message with saga id: [{}] is already processed!", restaurantApprovalResponse.getSagaId());
+            }
             return;
         }
 
@@ -59,7 +61,9 @@ public class OrderApprovalSaga implements ISagaStep<RestaurantApprovalResponse> 
         paymentOutboxHelper.save(getUpdatedPaymentOutboxMessage(restaurantApprovalResponse.getSagaId(),
                 order.getOrderStatus(), sagaStatus));
 
-        log.info("Order with id: [{}] is approved", order.getId().getValue());
+        if (log.isInfoEnabled()) {
+            log.info("Order with id: [{}] is approved", order.getId().getValue());
+        }
     }
 
     @Override
@@ -71,8 +75,10 @@ public class OrderApprovalSaga implements ISagaStep<RestaurantApprovalResponse> 
         );
 
         if (orderApprovalOutboxMessageResponse.isEmpty()) {
-            log.info("An outbox message with saga id: {} is already roll backed!",
-                    restaurantApprovalResponse.getSagaId());
+            if (log.isInfoEnabled()) {
+                log.info("An outbox message with saga id: [{}] is already roll backed!",
+                        restaurantApprovalResponse.getSagaId());
+            }
             return;
         }
 
@@ -98,11 +104,15 @@ public class OrderApprovalSaga implements ISagaStep<RestaurantApprovalResponse> 
                 restaurantApprovalResponse.getSagaId()
         );
 
-        log.info("Order with id: {} is cancelling", domainEvent.getOrder().getId().getValue());
+        if (log.isInfoEnabled()) {
+            log.info("Order with id: [{}] is cancelling", domainEvent.getOrder().getId().getValue());
+        }
     }
 
     private Order approveOrder(RestaurantApprovalResponse restaurantApprovalResponse) {
-        log.info("Approving order with id: {}", restaurantApprovalResponse.getOrderId());
+        if (log.isInfoEnabled()) {
+            log.info("Approving order with id: [{}]", restaurantApprovalResponse.getOrderId());
+        }
         Order order = orderSagaHelper.findOrder(restaurantApprovalResponse.getOrderId());
         orderDomainService.approveOrder(order);
         orderSagaHelper.saveOrder(order);
@@ -134,7 +144,9 @@ public class OrderApprovalSaga implements ISagaStep<RestaurantApprovalResponse> 
     }
 
     private OrderCancelledEvent rollbackOrder(RestaurantApprovalResponse restaurantApprovalResponse) {
-        log.info("Cancelling order with id: [{}]", restaurantApprovalResponse.getOrderId());
+        if (log.isInfoEnabled()) {
+            log.info("Cancelling order with id: [{}]", restaurantApprovalResponse.getOrderId());
+        }
         Order order = orderSagaHelper.findOrder(restaurantApprovalResponse.getOrderId());
         OrderCancelledEvent domainEvent = orderDomainService.cancelOrderPayment(order,
                 restaurantApprovalResponse.getFailureMessages());
