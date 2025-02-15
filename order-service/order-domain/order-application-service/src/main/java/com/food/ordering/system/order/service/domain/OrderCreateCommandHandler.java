@@ -26,7 +26,9 @@ public class OrderCreateCommandHandler {
     @Transactional
     public CreateOrderResponse createOrder(CreateOrderCommand createOrderCommand) {
         OrderCreatedEvent orderCreatedEvent = orderCreateHelper.persistOrder(createOrderCommand);
-        log.info("Order is created with id: [{}]", orderCreatedEvent.getOrder().getId().getValue());
+        if (log.isInfoEnabled()) {
+            log.info("Order is created with id: [{}]", orderCreatedEvent.getOrder().getId().getValue());
+        }
         CreateOrderResponse createOrderResponse = orderDataMapper.orderToCreateOrderResponse(
                 orderCreatedEvent.getOrder(),
                 "Order created successfully"
@@ -40,7 +42,9 @@ public class OrderCreateCommandHandler {
                 UUID.randomUUID().toString()
         );
 
-        log.info("Returning CreateOrderResponse with order id: [{}]", orderCreatedEvent.getOrder().getId());
+        if (log.isInfoEnabled()) {
+            log.info("Returning CreateOrderResponse with order id: [{}]", orderCreatedEvent.getOrder().getId());
+        }
 
         return createOrderResponse;
     }
