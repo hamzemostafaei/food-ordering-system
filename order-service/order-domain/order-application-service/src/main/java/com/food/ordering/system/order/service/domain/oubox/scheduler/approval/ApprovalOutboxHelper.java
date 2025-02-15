@@ -47,12 +47,16 @@ public class ApprovalOutboxHelper {
     public void save(OrderApprovalOutboxMessage orderApprovalOutboxMessage) {
         OrderApprovalOutboxMessage response = approvalOutboxRepository.save(orderApprovalOutboxMessage);
         if (response == null) {
-            log.error("Could not save OrderApprovalOutboxMessage with outbox id: {}",
-                    orderApprovalOutboxMessage.getId());
+            if (log.isErrorEnabled()) {
+                log.error("Could not save OrderApprovalOutboxMessage with outbox id: [{}]",
+                        orderApprovalOutboxMessage.getId());
+            }
             throw new OrderDomainException("Could not save OrderApprovalOutboxMessage with outbox id: " +
                     orderApprovalOutboxMessage.getId());
         }
-        log.info("OrderApprovalOutboxMessage saved with outbox id: {}", orderApprovalOutboxMessage.getId());
+        if (log.isInfoEnabled()) {
+            log.info("OrderApprovalOutboxMessage saved with outbox id: [{}]", orderApprovalOutboxMessage.getId());
+        }
     }
 
     @Transactional
@@ -74,8 +78,7 @@ public class ApprovalOutboxHelper {
     }
 
     @Transactional
-    public void deleteApprovalOutboxMessageByOutboxStatusAndSagaStatus(OutboxStatus outboxStatus,
-                                                                       SagaStatus... sagaStatus) {
+    public void deleteApprovalOutboxMessageByOutboxStatusAndSagaStatus(OutboxStatus outboxStatus, SagaStatus... sagaStatus) {
         approvalOutboxRepository.deleteByTypeAndOutboxStatusAndSagaStatus(ORDER_SAGA_NAME, outboxStatus, sagaStatus);
     }
 
@@ -83,7 +86,9 @@ public class ApprovalOutboxHelper {
         try {
             return objectMapper.writeValueAsString(orderApprovalEventPayload);
         } catch (JsonProcessingException e) {
-            log.error("Could not create OrderApprovalEventPayload for order id: {}", orderApprovalEventPayload.getOrderId(), e);
+            if (log.isErrorEnabled()) {
+                log.error("Could not create OrderApprovalEventPayload for order id: [{}]", orderApprovalEventPayload.getOrderId(), e);
+            }
             throw new OrderDomainException(
                     String.format("Could not create OrderApprovalEventPayload for order id: [%s]", orderApprovalEventPayload.getOrderId()));
         }

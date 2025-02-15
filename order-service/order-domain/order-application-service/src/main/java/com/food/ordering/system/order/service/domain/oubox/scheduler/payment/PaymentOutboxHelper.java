@@ -88,7 +88,7 @@ public class PaymentOutboxHelper {
             return objectMapper.writeValueAsString(paymentEventPayload);
         } catch (JsonProcessingException e) {
             if (log.isErrorEnabled()) {
-                log.error("Could not create OrderPaymentEventPayload object for order id: {}",paymentEventPayload.getOrderId(), e);
+                log.error("Could not create OrderPaymentEventPayload object for order id: [{}]",paymentEventPayload.getOrderId(), e);
             }
             throw new OrderDomainException(
                     String.format("Could not create OrderPaymentEventPayload object for order id: [%s]", paymentEventPayload.getOrderId()));

@@ -33,16 +33,20 @@ public class RestaurantApprovalOutboxCleanerScheduler implements IOutboxSchedule
                         SagaStatus.Compensated);
         if (outboxMessagesResponse.isPresent()) {
             List<OrderApprovalOutboxMessage> outboxMessages = outboxMessagesResponse.get();
-            log.info("Received {} OrderApprovalOutboxMessage for clean-up. The payloads: {}",
-                    outboxMessages.size(),
-                    outboxMessages.stream().map(OrderApprovalOutboxMessage::getPayload)
-                            .collect(Collectors.joining("\n")));
+            if (log.isInfoEnabled()) {
+                log.info("Received [{}] OrderApprovalOutboxMessage for clean-up. The payloads: [{}]",
+                        outboxMessages.size(),
+                        outboxMessages.stream().map(OrderApprovalOutboxMessage::getPayload)
+                                .collect(Collectors.joining("\n")));
+            }
             approvalOutboxHelper.deleteApprovalOutboxMessageByOutboxStatusAndSagaStatus(
                     OutboxStatus.Completed,
                     SagaStatus.Succeeded,
                     SagaStatus.Failed,
                     SagaStatus.Compensated);
-            log.info("{} OrderApprovalOutboxMessage deleted!", outboxMessages.size());
+            if (log.isInfoEnabled()) {
+                log.info("[{}] OrderApprovalOutboxMessage deleted!", outboxMessages.size());
+            }
         }
 
     }

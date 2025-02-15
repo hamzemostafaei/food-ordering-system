@@ -35,17 +35,21 @@ public class PaymentOutboxCleanerScheduler implements IOutboxScheduler {
 
         if (outboxMessagesResponse.isPresent()) {
             List<OrderPaymentOutboxMessage> outboxMessages = outboxMessagesResponse.get();
-            log.info("Received {} OrderPaymentOutboxMessage for clean-up. The payloads: {}",
-                    outboxMessages.size(),
-                    outboxMessages.stream().map(OrderPaymentOutboxMessage::getPayload)
-                            .collect(Collectors.joining("\n")));
+            if (log.isInfoEnabled()) {
+                log.info("Received [{}] OrderPaymentOutboxMessage for clean-up. The payloads: [{}]",
+                        outboxMessages.size(),
+                        outboxMessages.stream().map(OrderPaymentOutboxMessage::getPayload)
+                                .collect(Collectors.joining("\n")));
+            }
             paymentOutboxHelper.deletePaymentOutboxMessageByOutboxStatusAndSagaStatus(
                     OutboxStatus.Completed,
                     SagaStatus.Succeeded,
                     SagaStatus.Failed,
                     SagaStatus.Compensated
             );
-            log.info("{} OrderPaymentOutboxMessage deleted!", outboxMessages.size());
+            if (log.isInfoEnabled()) {
+                log.info("[{}] OrderPaymentOutboxMessage deleted!", outboxMessages.size());
+            }
         }
 
     }
