@@ -19,17 +19,23 @@ public class RestaurantDomainServiceImpl implements IRestaurantDomainService {
     @Override
     public ABaseOrderApprovalEvent validateOrder(Restaurant restaurant, List<String> failureMessages) {
         restaurant.validateOrder(failureMessages);
-        log.info("Validating order with id: {}", restaurant.getOrderDetail().getId().getValue());
+        if (log.isInfoEnabled()) {
+            log.info("Validating order with id: {}", restaurant.getOrderDetail().getId().getValue());
+        }
 
         if (failureMessages.isEmpty()) {
-            log.info("Order is approved for order id: {}", restaurant.getOrderDetail().getId().getValue());
+            if (log.isInfoEnabled()) {
+                log.info("Order is approved for order id: {}", restaurant.getOrderDetail().getId().getValue());
+            }
             restaurant.constructOrderApproval(OrderApprovalStatus.Approved);
             return new OrderApprovedEvent(restaurant.getOrderApproval(),
                     restaurant.getId(),
                     failureMessages,
                     ZonedDateTime.now(ZoneId.of(UTC)));
         } else {
-            log.info("Order is rejected for order id: {}", restaurant.getOrderDetail().getId().getValue());
+            if (log.isInfoEnabled()) {
+                log.info("Order is rejected for order id: {}", restaurant.getOrderDetail().getId().getValue());
+            }
             restaurant.constructOrderApproval(OrderApprovalStatus.Rejected);
             return new OrderRejectedEvent(restaurant.getOrderApproval(),
                     restaurant.getId(),

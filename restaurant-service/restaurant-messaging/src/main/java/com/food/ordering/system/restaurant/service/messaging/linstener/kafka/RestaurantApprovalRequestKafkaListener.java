@@ -28,7 +28,9 @@ public class RestaurantApprovalRequestKafkaListener implements IKafkaConsumer<Re
     )
     public void receive(List<ConsumerRecord<String, RestaurantApprovalRequestAvroModel>> messages) {
 
-        log.info("{} number of orders approval requests received", messages.size());
+        if (log.isInfoEnabled()) {
+            log.info("{} number of orders approval requests received", messages.size());
+        }
 
         messages
                 .forEach(message -> {
@@ -36,19 +38,25 @@ public class RestaurantApprovalRequestKafkaListener implements IKafkaConsumer<Re
                     int partition = message.partition();
                     long offset = message.offset();
 
-                    log.info("Processing message with key: {}, partition: {}, offset: {}", key, partition, offset);
+                    if (log.isInfoEnabled()) {
+                        log.info("Processing message with key: {}, partition: {}, offset: {}", key, partition, offset);
+                    }
 
                     RestaurantApprovalRequestAvroModel restaurantApprovalRequestAvroModel = message.value();
 
                     try {
-                        log.info("Processing order approval for order id: {}", restaurantApprovalRequestAvroModel.getOrderId());
+                        if (log.isInfoEnabled()) {
+                            log.info("Processing order approval for order id: {}", restaurantApprovalRequestAvroModel.getOrderId());
+                        }
                         restaurantApprovalRequestMessageListener.approveOrder(
                                 restaurantMessagingDataMapper.restaurantApprovalRequestAvroModelToRestaurantApproval(restaurantApprovalRequestAvroModel)
                         );
                     } catch (RestaurantNotFoundException e) {
-                        log.error("No restaurant found for restaurant id: {}, and order id: {}",
-                                restaurantApprovalRequestAvroModel.getRestaurantId(),
-                                restaurantApprovalRequestAvroModel.getOrderId());
+                        if (log.isErrorEnabled()) {
+                            log.error("No restaurant found for restaurant id: {}, and order id: {}",
+                                    restaurantApprovalRequestAvroModel.getRestaurantId(),
+                                    restaurantApprovalRequestAvroModel.getOrderId());
+                        }
                     }
                 });
 

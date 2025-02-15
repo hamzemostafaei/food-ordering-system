@@ -28,7 +28,9 @@ public class PaymentRequestKafkaListener implements IKafkaConsumer<PaymentReques
     )
     public void receive(List<ConsumerRecord<String, PaymentRequestAvroModel>> messages) {
 
-        log.info("[{}] number of payment requests received", messages.size());
+        if (log.isInfoEnabled()) {
+            log.info("[{}] number of payment requests received", messages.size());
+        }
 
         messages
                 .forEach(message -> {
@@ -36,17 +38,23 @@ public class PaymentRequestKafkaListener implements IKafkaConsumer<PaymentReques
                     int partition = message.partition();
                     long offset = message.offset();
 
-                    log.info("Processing message with key: [{}], partition: [{}], offset: [{}]", key, partition, offset);
+                    if (log.isInfoEnabled()) {
+                        log.info("Processing message with key: [{}], partition: [{}], offset: [{}]", key, partition, offset);
+                    }
 
                     PaymentRequestAvroModel paymentRequestAvroModel = message.value();
 
                     if (PaymentOrderStatus.PENDING == paymentRequestAvroModel.getPaymentOrderStatus()) {
-                        log.info("Processing payment for order id: [{}]", paymentRequestAvroModel.getOrderId());
+                        if (log.isInfoEnabled()) {
+                            log.info("Processing payment for order id: [{}]", paymentRequestAvroModel.getOrderId());
+                        }
                         paymentRequestMessageListener.completePayment(
                                 paymentMessagingDataMapper.paymentRequestAvroModelToPaymentRequest(paymentRequestAvroModel)
                         );
                     } else if (PaymentOrderStatus.CANCELLED == paymentRequestAvroModel.getPaymentOrderStatus()) {
-                        log.info("Cancelling payment for order id: [{}]", paymentRequestAvroModel.getOrderId());
+                        if (log.isInfoEnabled()) {
+                            log.info("Cancelling payment for order id: [{}]", paymentRequestAvroModel.getOrderId());
+                        }
                         paymentRequestMessageListener.cancelPayment(
                                 paymentMessagingDataMapper.paymentRequestAvroModelToPaymentRequest(paymentRequestAvroModel));
                     }

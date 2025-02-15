@@ -44,11 +44,15 @@ public class PaymentRequestHelper {
     @Transactional
     public void persistPayment(PaymentRequest paymentRequest) {
         if (publishIfOutboxMessageProcessedForPayment(paymentRequest, PaymentStatus.Completed)) {
-            log.info("An outbox message with saga id: [{}] is already saved to database!", paymentRequest.getSagaId());
+            if (log.isInfoEnabled()) {
+                log.info("An outbox message with saga id: [{}] is already saved to database!", paymentRequest.getSagaId());
+            }
             return;
         }
 
-        log.info("Received payment complete event for order id: [{}]", paymentRequest.getOrderId());
+        if (log.isInfoEnabled()) {
+            log.info("Received payment complete event for order id: [{}]", paymentRequest.getOrderId());
+        }
         Payment payment = paymentDataMapper.paymentRequestModelToPayment(paymentRequest);
         CreditEntry creditEntry = getCreditEntry(payment.getCustomerId());
         List<CreditHistory> creditHistories = getCreditHistory(payment.getCustomerId());
@@ -68,15 +72,21 @@ public class PaymentRequestHelper {
     @Transactional
     public void persistCancelPayment(PaymentRequest paymentRequest) {
         if (publishIfOutboxMessageProcessedForPayment(paymentRequest, PaymentStatus.Cancelled)) {
-            log.info("An outbox message with saga id: [{}] is already saved to database!", paymentRequest.getSagaId());
+            if (log.isInfoEnabled()) {
+                log.info("An outbox message with saga id: [{}] is already saved to database!", paymentRequest.getSagaId());
+            }
             return;
         }
 
-        log.info("Received payment rollback event for order id: {}", paymentRequest.getOrderId());
+        if (log.isInfoEnabled()) {
+            log.info("Received payment rollback event for order id: {}", paymentRequest.getOrderId());
+        }
         Optional<Payment> paymentResponse = paymentRepository
                 .findByOrderId(paymentRequest.getOrderId());
         if (paymentResponse.isEmpty()) {
-            log.error("Payment with order id: [{}] could not be found!", paymentRequest.getOrderId());
+            if (log.isErrorEnabled()) {
+                log.error("Payment with order id: [{}] could not be found!", paymentRequest.getOrderId());
+            }
             throw new PaymentNotFoundException("Payment with order id: " +
                     paymentRequest.getOrderId() + " could not be found!");
         }
@@ -98,7 +108,9 @@ public class PaymentRequestHelper {
     private CreditEntry getCreditEntry(CustomerId customerId) {
         Optional<CreditEntry> creditEntry = creditEntryRepository.findByCustomerId(customerId);
         if (creditEntry.isEmpty()) {
-            log.error("Could not find credit entry for customer: [{}]", customerId.getValue());
+            if (log.isErrorEnabled()) {
+                log.error("Could not find credit entry for customer: [{}]", customerId.getValue());
+            }
             throw new PaymentApplicationServiceException("Could not find credit entry for customer: " +
                     customerId.getValue());
         }
@@ -108,7 +120,9 @@ public class PaymentRequestHelper {
     private List<CreditHistory> getCreditHistory(CustomerId customerId) {
         Optional<List<CreditHistory>> creditHistories = creditHistoryRepository.findByCustomerId(customerId);
         if (creditHistories.isEmpty()) {
-            log.error("Could not find credit history for customer: [{}]", customerId.getValue());
+            if (log.isErrorEnabled()) {
+                log.error("Could not find credit history for customer: [{}]", customerId.getValue());
+            }
             throw new PaymentApplicationServiceException("Could not find credit history for customer: " +
                     customerId.getValue());
         }

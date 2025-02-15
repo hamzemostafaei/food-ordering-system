@@ -31,9 +31,11 @@ public class RestaurantApprovalEventKafkaPublisher implements IRestaurantApprova
 
         String sagaId = orderOutboxMessage.getSagaId();
 
-        log.info("Received OrderOutboxMessage for order id: {} and saga id: {}",
-                orderEventPayload.getOrderId(),
-                sagaId);
+        if (log.isInfoEnabled()) {
+            log.info("Received OrderOutboxMessage for order id: [{}] and saga id: [{}]",
+                    orderEventPayload.getOrderId(),
+                    sagaId);
+        }
         try {
             RestaurantApprovalResponseAvroModel restaurantApprovalResponseAvroModel =
                     restaurantMessagingDataMapper.orderEventPayloadToRestaurantApprovalResponseAvroModel(sagaId, orderEventPayload);
@@ -53,12 +55,15 @@ public class RestaurantApprovalEventKafkaPublisher implements IRestaurantApprova
                     )
             );
 
-            log.info("RestaurantApprovalResponseAvroModel sent to kafka for order id: {} and saga id: {}",
-                    restaurantApprovalResponseAvroModel.getOrderId(), sagaId);
+            if (log.isInfoEnabled()) {
+                log.info("RestaurantApprovalResponseAvroModel sent to kafka for order id: [{}] and saga id: [{}]",
+                        restaurantApprovalResponseAvroModel.getOrderId(), sagaId);
+            }
         } catch (Exception e) {
-            log.error("Error while sending RestaurantApprovalResponseAvroModel message" +
-                            " to kafka with order id: {} and saga id: {}, error: {}",
-                    orderEventPayload.getOrderId(), sagaId, e.getMessage());
+            if (log.isErrorEnabled()) {
+                log.error("Error while sending RestaurantApprovalResponseAvroModel message to kafka with order id: [{}] and saga id: [{}], error: [{}]",
+                        orderEventPayload.getOrderId(), sagaId, e.getMessage());
+            }
         }
     }
 }

@@ -33,9 +33,11 @@ public class PaymentEventKafkaPublisher implements IPaymentResponseMessagePublis
 
         String sagaId = orderOutboxMessage.getSagaId();
 
-        log.info("Received OrderOutboxMessage for order id: [{}] and saga id: [{}]",
-                orderEventPayload.getOrderId(),
-                sagaId);
+        if (log.isInfoEnabled()) {
+            log.info("Received OrderOutboxMessage for order id: [{}] and saga id: [{}]",
+                    orderEventPayload.getOrderId(),
+                    sagaId);
+        }
 
         try {
 
@@ -55,11 +57,15 @@ public class PaymentEventKafkaPublisher implements IPaymentResponseMessagePublis
                     )
             );
 
-            log.info("PaymentResponseAvroModel sent to kafka for order id: [{}] and saga id: [{}]",
-                    paymentResponseAvroModel.getOrderId(), sagaId);
+            if (log.isInfoEnabled()) {
+                log.info("PaymentResponseAvroModel sent to kafka for order id: [{}] and saga id: [{}]",
+                        paymentResponseAvroModel.getOrderId(), sagaId);
+            }
         } catch (Exception e) {
-            log.error("Error while sending PaymentRequestAvroModel message to kafka with order id: [{}] and saga id: [{}], error:[{}]",
-                    orderEventPayload.getOrderId(), sagaId, e.getMessage());
+            if (log.isErrorEnabled()) {
+                log.error("Error while sending PaymentRequestAvroModel message to kafka with order id: [{}] and saga id: [{}], error:[{}]",
+                        orderEventPayload.getOrderId(), sagaId, e.getMessage());
+            }
         }
     }
 }

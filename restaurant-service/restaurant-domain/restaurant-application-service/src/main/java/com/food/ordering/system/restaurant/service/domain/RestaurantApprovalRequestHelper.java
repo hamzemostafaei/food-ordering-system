@@ -37,12 +37,16 @@ public class RestaurantApprovalRequestHelper {
     public void persistOrderApproval(RestaurantApprovalRequest restaurantApprovalRequest) {
 
         if (publishIfOutboxMessageProcessed(restaurantApprovalRequest)) {
-            log.info("An outbox message with saga id: [{}] already saved to database!",
-                    restaurantApprovalRequest.getSagaId());
+            if (log.isInfoEnabled()) {
+                log.info("An outbox message with saga id: [{}] already saved to database!",
+                        restaurantApprovalRequest.getSagaId());
+            }
             return;
         }
 
-        log.info("Processing restaurant approval for order id: [{}]", restaurantApprovalRequest.getOrderId());
+        if (log.isInfoEnabled()) {
+            log.info("Processing restaurant approval for order id: [{}]", restaurantApprovalRequest.getOrderId());
+        }
         List<String> failureMessages = new ArrayList<>();
         Restaurant restaurant = findRestaurant(restaurantApprovalRequest);
         ABaseOrderApprovalEvent orderApprovalEvent =
@@ -65,7 +69,9 @@ public class RestaurantApprovalRequestHelper {
 
         Optional<Restaurant> restaurantResult = restaurantRepository.findRestaurantInformation(restaurant);
         if (restaurantResult.isEmpty()) {
-            log.error("Restaurant with id [{}] not found!", restaurant.getId().getValue());
+            if (log.isErrorEnabled()) {
+                log.error("Restaurant with id [{}] not found!", restaurant.getId().getValue());
+            }
             throw new RestaurantNotFoundException("Restaurant with id " + restaurant.getId().getValue() +
                     " not found!");
         }
