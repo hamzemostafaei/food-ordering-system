@@ -38,8 +38,7 @@ public class PaymentOutboxRepositoryImpl implements IPaymentOutboxRepository {
         return Optional.of(paymentOutboxJpaRepository.findByTypeAndOutboxStatusAndSagaStatusIn(sagaType,
                         outboxStatus,
                         Arrays.asList(sagaStatus))
-                .orElseThrow(() -> new PaymentOutboxNotFoundException("Payment outbox object " +
-                        "could not be found for saga type " + sagaType))
+                .orElseThrow(() -> new PaymentOutboxNotFoundException("Payment outbox object could not be found for saga type " + sagaType))
                 .stream()
                 .map(paymentOutboxDataAccessMapper::paymentOutboxEntityToOrderPaymentOutboxMessage)
                 .collect(Collectors.toList()));
